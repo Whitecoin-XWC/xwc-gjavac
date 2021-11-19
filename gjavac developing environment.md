@@ -27,7 +27,7 @@ This documents introduces how to setup a developing environment for gjavac. As t
 
 6. Once all the libraries are ready, the whole project can be built:
 
-   <img src="C:\Users\David Yang\AppData\Roaming\Typora\typora-user-images\image-20211119165236190.png" alt="image-20211119165236190" style="zoom: 50%;" />
+   <img src="https://github.com/Whitecoin-XWC/xwc-gjavac/blob/master/image-20211119165236190.png" alt="image-20211119165236190" style="zoom: 50%;" />
 
 7. The project consists of 4 modules: 
 
