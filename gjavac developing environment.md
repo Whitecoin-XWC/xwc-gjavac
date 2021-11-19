@@ -38,7 +38,7 @@ This documents introduces how to setup a developing environment for gjavac. As t
 
 8. The java smart contract testcases are driven by the junit, so it is quite easy to run all testcases:
 
-   ​	<img src="C:\Users\David Yang\AppData\Roaming\Typora\typora-user-images\image-20211119171317387.png" alt="image-20211119171317387" style="zoom:67%;" />
+   ​	<img src="https://github.com/Whitecoin-XWC/xwc-gjavac/blob/master/image-20211119171317387.png" alt="image-20211119171317387" style="zoom:67%;" />
 
 9. Now the gjavac compiler developing environment is setup and you can start writting your first XWC Java smart contract. The compiled output file .ass can be found at *gjavactestjavacontract/outputs/\**
 
