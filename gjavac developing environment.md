@@ -27,7 +27,7 @@ This documents introduces how to setup a developing environment for gjavac. As t
 
 6. Once all the libraries are ready, the whole project can be built:
 
-   <img src="https://github.com/Whitecoin-XWC/xwc-gjavac/blob/master/image-20211119165236190.png" alt="image-20211119165236190" style="zoom: 50%;" />
+   <img src="https://github.com/Whitecoin-XWC/xwc-gjavac/blob/master/images/image-20211119165236190.png" alt="image-20211119165236190" style="zoom: 50%;" />
 
 7. The project consists of 4 modules: 
 
@@ -38,7 +38,7 @@ This documents introduces how to setup a developing environment for gjavac. As t
 
 8. The java smart contract testcases are driven by the junit, so it is quite easy to run all testcases:
 
-   ​	<img src="https://github.com/Whitecoin-XWC/xwc-gjavac/blob/master/image-20211119171317387.png" alt="image-20211119171317387" style="zoom:67%;" />
+   ​	<img src="https://github.com/Whitecoin-XWC/xwc-gjavac/blob/master/images/image-20211119171317387.png" alt="image-20211119171317387" style="zoom:67%;" />
 
 9. Now the gjavac compiler developing environment is setup and you can start writting your first XWC Java smart contract. The compiled output file .ass can be found at *gjavactestjavacontract/outputs/\**
 
