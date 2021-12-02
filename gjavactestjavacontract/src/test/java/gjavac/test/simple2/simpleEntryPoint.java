@@ -1,4 +1,4 @@
-package gjavac.test.simple;
+package gjavac.test.simple2;
 
 import gjavac.lib.UvmContract;
 
