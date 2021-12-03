@@ -46,16 +46,16 @@ public class JavaContractTest {
         MainKt.main(classesToCompile);
     }
 
-    @Test
-    public void testSimple1ContractCompile() {
-        String class1 = testClassesDir + "/gjavac/test/simple2/simpleContractTest";
-        String class2 = testClassesDir + "/gjavac/test/simple2/simpleEntryPoint";
-        String class3 = testClassesDir + "/gjavac/test/simple2/MultiOwnedContractSimpleInterface";
-        String class4 = testClassesDir + "/gjavac/test/simple2/Storage";
-
-        String[] classesToCompile = new String[]{class1, class2, class3, class4,"-o", "outputs/simple2Test_results"};
-        MainKt.main(classesToCompile);
-    }
+//    @Test
+//    public void testSimple1ContractCompile() {
+//        String class1 = testClassesDir + "/gjavac/test/simple2/simpleContractTest";
+//        String class2 = testClassesDir + "/gjavac/test/simple2/simpleEntryPoint";
+//        String class3 = testClassesDir + "/gjavac/test/simple2/MultiOwnedContractSimpleInterface";
+//        String class4 = testClassesDir + "/gjavac/test/simple2/Storage";
+//
+//        String[] classesToCompile = new String[]{class1, class2, class3, class4,"-o", "outputs/simple2Test_results"};
+//        MainKt.main(classesToCompile);
+//    }
 
 //    @Test
 //    public void testFixedPriceContractCompile() {

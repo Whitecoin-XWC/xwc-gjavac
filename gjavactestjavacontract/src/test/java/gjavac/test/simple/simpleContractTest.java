@@ -23,15 +23,4 @@ class simpleContractTest extends UvmContract<Storage> {
         return "Pong!";
     }
 
-    public String pingApi(String arg) {
-        print("Pong!");
-        return "Pong!";
-    }
-
-    @Offline
-    public String getName(String arg) {
-        print("getName()!");
-        return this.getStorage().name;
-    }
-
 }

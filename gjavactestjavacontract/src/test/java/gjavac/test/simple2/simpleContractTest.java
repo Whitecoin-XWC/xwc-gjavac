@@ -17,26 +17,10 @@ class simpleContractTest extends UvmContract<Storage> {
         this.getStorage().name = "A simple testing!";
     }
 
+    @Offline
     public String test(String arg) {
         MultiOwnedContractSimpleInterface multiOwnedContractSimpleInterface = importContractFromAddress(MultiOwnedContractSimpleInterface.class, arg);
         return multiOwnedContractSimpleInterface.ping("");
-    }
-
-    @Offline
-    public String testOffline(String arg) {
-        MultiOwnedContractSimpleInterface multiOwnedContractSimpleInterface = importContractFromAddress(MultiOwnedContractSimpleInterface.class, "XWCCTtDKzUKrx6Mr4fNRLdSkMtepRoBw95eQj");
-        return multiOwnedContractSimpleInterface.ping("");
-    }
-
-    public String test1(String arg) {
-        MultiOwnedContractSimpleInterface multiOwnedContractSimpleInterface = importContractFromAddress(MultiOwnedContractSimpleInterface.class, arg);
-        return multiOwnedContractSimpleInterface.ping_api("");
-    }
-
-    @Offline
-    public String test1Offline(String arg) {
-        MultiOwnedContractSimpleInterface multiOwnedContractSimpleInterface = importContractFromAddress(MultiOwnedContractSimpleInterface.class, arg);
-        return multiOwnedContractSimpleInterface.ping_api("");
     }
 
 }

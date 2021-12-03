@@ -6,5 +6,4 @@ package gjavac.test.simple2;
  */
 public interface MultiOwnedContractSimpleInterface {
     String ping(String arg);
-    String ping_api(String arg);
 }
