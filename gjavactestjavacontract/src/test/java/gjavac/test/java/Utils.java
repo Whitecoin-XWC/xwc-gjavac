@@ -5,7 +5,6 @@ import gjavac.lib.*;
 import kotlin.Pair;
 
 import static gjavac.lib.UvmCoreLibs.get_current_contract_address;
-import static gjavac.lib.UvmCoreLibs.print;
 
 @Component
 public class Utils {

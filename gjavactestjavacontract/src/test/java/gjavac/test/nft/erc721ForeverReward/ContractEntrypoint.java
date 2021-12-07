@@ -8,7 +8,7 @@ public class ContractEntrypoint {
     public UvmContract main() {
         print("hello java");
         ERC721ForeverRewardContract contract = new ERC721ForeverRewardContract();
-        contract.setStorage(new ERC721ForeverRewardStorage());
+//        contract.setStorage(new ERC721ForeverRewardStorage());
         print(contract);
 //        contract.init();
 

@@ -8,7 +8,7 @@ public class DemoContractEntrypoint {
     public UvmContract main() {
         print("hello java");
         StableTokenContract contract = new StableTokenContract();
-        contract.setStorage(new Storage());
+//        contract.setStorage(new Storage());
         print(contract);
 //        contract.init();
 

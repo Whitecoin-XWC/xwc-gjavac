@@ -1,8 +1,6 @@
 package gjavac.test.nft.erc721;
 
 import gjavac.lib.*;
-import gjavac.lib.UvmCoreLibs.*;
-import gjavac.test.nft.erc721ForeverReward.ERC721ForeverRewardContract;
 
 import static gjavac.lib.UvmCoreLibs.*;
 

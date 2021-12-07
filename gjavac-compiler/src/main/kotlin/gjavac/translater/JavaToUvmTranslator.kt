@@ -1080,7 +1080,7 @@ open class JavaToUvmTranslator {
                     return result
                 }
                 if (calledTypeName == "kotlin.jvm.internal.Intrinsics") {
-                    if (methodName == "checkParameterIsNotNull" || methodName == "checkExpressionValueIsNotNull" || methodName == "checkNotNull") {
+                    if (methodName == "checkParameterIsNotNull" || methodName == "checkExpressionValueIsNotNull" || methodName == "checkNotNull" || methodName == "checkNotNullParameter") {
                         //makeLoadConstInst(proto, i, result, proto.tmp1StackTopSlotIndex, 1, commentPrefix)
                         //pushIntoEvalStackTopSlot(proto,proto.tmp1StackTopSlotIndex,i,result,commentPrefix + " checkParameterIsNotNull")
                         popFromEvalStackToSlot(proto,proto.tmpMaxStackTopSlotIndex,i,result,commentPrefix)

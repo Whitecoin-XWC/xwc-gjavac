@@ -8,7 +8,7 @@ public class ContractEntrypoint {
     public UvmContract main() {
         print("hello java");
         AuctionContract contract = new AuctionContract();
-        contract.setStorage(new AuctionStorage());
+//        contract.setStorage(new AuctionStorage());
         print(contract);
 //        contract.init();
 

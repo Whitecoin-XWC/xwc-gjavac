@@ -41,21 +41,22 @@ public class JavaContractTest {
     public void testSimpleContractCompile() {
         String class1 = testClassesDir + "/gjavac/test/simple/simpleContractTest";
         String class2 = testClassesDir + "/gjavac/test/simple/simpleEntryPoint";
+        String class3 = testClassesDir + "/gjavac/test/simple/SimpleStorage";
 
-        String[] classesToCompile = new String[]{class1, class2, "-o", "outputs/simpleTest_results"};
+        String[] classesToCompile = new String[]{class1, class2,class3, "-o", "outputs/simpleTest_results"};
         MainKt.main(classesToCompile);
     }
 
-//    @Test
-//    public void testSimple1ContractCompile() {
-//        String class1 = testClassesDir + "/gjavac/test/simple2/simpleContractTest";
-//        String class2 = testClassesDir + "/gjavac/test/simple2/simpleEntryPoint";
+    @Test
+    public void testSimple1ContractCompile() {
+        String class1 = testClassesDir + "/gjavac/test/simple2/simpleContractTest";
+        String class2 = testClassesDir + "/gjavac/test/simple2/simpleEntryPoint";
 //        String class3 = testClassesDir + "/gjavac/test/simple2/MultiOwnedContractSimpleInterface";
-//        String class4 = testClassesDir + "/gjavac/test/simple2/Storage";
-//
-//        String[] classesToCompile = new String[]{class1, class2, class3, class4,"-o", "outputs/simple2Test_results"};
-//        MainKt.main(classesToCompile);
-//    }
+        String class4 = testClassesDir + "/gjavac/test/simple2/Storage";
+
+        String[] classesToCompile = new String[]{class1, class2, class4,"-o", "outputs/simple2Test_results"};
+        MainKt.main(classesToCompile);
+    }
 
 //    @Test
 //    public void testFixedPriceContractCompile() {
