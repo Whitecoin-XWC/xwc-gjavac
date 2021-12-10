@@ -28,7 +28,7 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         print("auction contract created");
     }
 
-    public final void initAuction(String arg) {
+    public final void init_auction(String arg) {
         Utils utils = new Utils();
         utils.checkAdmin(this);
         if (this.getStorage().state != utils.NOT_INITED()) {
@@ -128,7 +128,7 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         emit("AuctionMinDeltaPriceUpdated", json.dumps(uvmMap));
     }
 
-    public final void onDepositAsset(String args) {
+    public final void on_deposit_asset(String args) {
         Utils utils = new Utils();
         utils.checkState(this);
         UvmMap arg = (UvmMap) json.loads(args);

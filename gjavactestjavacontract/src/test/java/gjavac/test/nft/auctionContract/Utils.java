@@ -11,7 +11,7 @@ import static gjavac.lib.UvmCoreLibs.*;
 @Component
 public class Utils {
 
-    UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+    public UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
 
     public String NOT_INITED() {
         return "NOT_INITED";

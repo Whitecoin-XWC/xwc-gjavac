@@ -24,7 +24,7 @@ public class ERC721Contract extends UvmContract<ERC721Storage> {
         print("erc721 contract created");
     }
 
-    public void initToken(String arg) {
+    public void init_token(String arg) {
         Utils utils = new Utils();
         utils.checkAdmin(this);
         pprint("arg" + arg);
@@ -43,16 +43,16 @@ public class ERC721Contract extends UvmContract<ERC721Storage> {
             error("symbol needed");
             return;
         }
-        this.getStorage().name = name;
-        this.getStorage().symbol = symbol;
+        this.getStorage().setName(name);
+        this.getStorage().setSymbol(symbol);
 
         String fromAddress = utils.getFromAddress();
         if (fromAddress != caller_address()) {
             error("init_token can't be called from other contract");
             return;
         }
-        this.getStorage().state = utils.COMMON();
-        UvmMap uvmMap = new UvmMap();
+        this.getStorage().setState(utils.COMMON());
+        UvmMap<Object> uvmMap = UvmMap.create();
         uvmMap.set("name", name);
         uvmMap.set("symbol", symbol);
         emit("Inited", json.dumps(uvmMap));
@@ -154,6 +154,7 @@ public class ERC721Contract extends UvmContract<ERC721Storage> {
         utils._mint(this, to, data, feeRate);
     }
 
+    @Offline
     public String tokenOfOwnerByIndex(String args) {
         Utils utils = new Utils();
         UvmArray<String> parsed = utils.parseArgs(args, 2, "argument format error, need format: owner,index");

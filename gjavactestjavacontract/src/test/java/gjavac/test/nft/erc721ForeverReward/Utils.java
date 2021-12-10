@@ -10,7 +10,6 @@ import static gjavac.lib.UvmCoreLibs.*;
  */
 @Component
 public class Utils {
-    UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
 
     public String NOT_INITED() {
         return "NOT_INITED";
@@ -122,6 +121,7 @@ public class Utils {
         } else {
             data = tostring(operatorApprovals);
         }
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         UvmMap uvmMap = (UvmMap) totable(json.loads(data));
         if (uvmMap.get("operator") == null) {
             return false;
@@ -130,8 +130,7 @@ public class Utils {
     }
 
     public final void withdrawNativeAssetPrivate(ERC721ForeverRewardContract self, String from, String symbol, String amountStr) {
-        Utils utils = new Utils();
-        utils.checkState(self);
+        checkState(self);
         long amount = tointeger(amountStr);
         if (symbol == null || symbol.length() < 1 || amount < 0) {
             error("invalid params");
@@ -142,6 +141,7 @@ public class Utils {
         if (nativeBalances == null) {
             nativeBalances = "{}";
         }
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         UvmMap userAssets = (UvmMap) json.loads(tostring(nativeBalances));
         Object oldBalanceObj = userAssets.get("symbol");
         if (oldBalanceObj == null) {
@@ -183,6 +183,7 @@ public class Utils {
         uvmMap.set("owner", tostring(owner));
         uvmMap.set("to", to);
         uvmMap.set("tokenId", tokenId);
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         emit("Approval", json.dumps(uvmMap));
     }
 
@@ -208,6 +209,7 @@ public class Utils {
     public final void _addTokenToOwnerEnumeration(ERC721ForeverRewardContract self, String to, String tokenId) {
         long amount = fast_map_get("_balances", to) == null ? 0 : tointeger(fast_map_get("_balances", to));
         String data = fast_map_get("_ownedTokens", to) == null ? "{}" : tostring(fast_map_get("_ownedTokens", to));
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         UvmMap json_data = (UvmMap) totable(json.loads(data));
         json_data.set(tostring(amount + 1), tokenId);
         fast_map_set("_ownedTokens", to, json.dumps(json_data));
@@ -230,6 +232,7 @@ public class Utils {
         }
 
         final String data = tostring(fast_map_get("_ownedTokens", from));
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         UvmArray<String> json_data = (UvmArray) totable(json.loads(data));
         if (tokenIndex != lastTokenIndex) {
             String lastTokenId = json_data.get((int) lastTokenIndex);
@@ -237,7 +240,6 @@ public class Utils {
             fast_map_set("_ownedTokensIndex", lastTokenId, tostring(tokenIndex));
         }
 
-        //TODO table.remove( json_data,tointeger(lastTokenIndex))
         fast_map_set("_ownedTokens", from, json.dumps(json_data));
         fast_map_set("_ownedTokensIndex", tokenId, null);
     }
@@ -291,21 +293,21 @@ public class Utils {
     }
 
     public final void _transfer(ERC721ForeverRewardContract self, String from, String to, String tokenId) {
-        Utils utils = new Utils();
         Object owner = _ownerOf(tokenId);
-        utils.require(owner == from, "ERC721: transfer of token that is not own");
-        utils.require(is_valid_address(to), "ERC721: transfer to the zero address");
-        UvmArray tradePrice = utils.getTradePrice(tokenId);
+        require(owner == from, "ERC721: transfer of token that is not own");
+        require(is_valid_address(to), "ERC721: transfer to the zero address");
+        UvmArray tradePrice = getTradePrice(tokenId);
         final long feeRate = fast_map_get("_allTokenMintFee", tokenId) == null ? 0 : tointeger(fast_map_get("_allTokenMintFee", tokenId));
         final String minter = tostring(fast_map_get("_allTokenMinter", tokenId));
         final String symbol = tostring(tradePrice.get(1));
         final long amount = tointeger(feeRate * tointeger(tradePrice.get(2)) / 100);
-        utils.require(minter != "", "The unknown minter does not exist an exception");
-        if (minter != "" && feeRate > 0 && amount > 0 && utils.checkPrivilege(self, from, to) == false) {
+        require(minter != "", "The unknown minter does not exist an exception");
+        if (minter != "" && feeRate > 0 && amount > 0 && checkPrivilege(self, from, to) == false) {
             Object nativeBalances = fast_map_get("_nativeBalances", from);
             if (nativeBalances == null) {
                 nativeBalances = "{}";
             }
+            UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
             UvmMap userAssets = (UvmMap) json.loads(tostring(nativeBalances));
             long oldBalance = tointeger(userAssets.get("symbol") == null ? 0 : userAssets.get("symbol"));
             if (oldBalance < amount) {
@@ -343,13 +345,13 @@ public class Utils {
         uvmMap.set("from", from);
         uvmMap.set("to", to);
         uvmMap.set("tokenId", tokenId);
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         emit("Transfer", json.dumps(uvmMap));
     }
 
     public final void _mint(ERC721ForeverRewardContract self, String to, String tokenId, long feeRate) {
-        Utils utils = new Utils();
-        utils.require(is_valid_address(to), "ERC721: mint to the zero address");
-        utils.require(_ownerOf(tokenId) == "", "ERC721: token already minted");
+        require(is_valid_address(to), "ERC721: mint to the zero address");
+        require(_ownerOf(tokenId) == "", "ERC721: token already minted");
         _beforeTokenTransfer(self, "", to, tokenId);
         long to_count = tointeger(fast_map_get("_balances", to));
         fast_map_set("_balances", to, tostring(to_count + 1));
@@ -360,6 +362,7 @@ public class Utils {
         uvmMap.set("to", to);
         uvmMap.set("tokenId", tokenId);
         uvmMap.set("memo", "mint");
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         emit("Transfer", json.dumps(uvmMap));
     }
 
@@ -387,7 +390,6 @@ public class Utils {
     }
 
     public final void _burn(ERC721ForeverRewardContract self, String tokenId) {
-        Utils utils = new Utils();
         Object owner = _ownerOf(tokenId);
         _beforeTokenTransfer(self, tostring(owner), "", tokenId);
         _approve("", tokenId);
@@ -400,6 +402,7 @@ public class Utils {
         uvmMap.set("to", "");
         uvmMap.set("tokenId", tokenId);
         uvmMap.set("memo", "burn");
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         emit("Transfer", json.dumps(uvmMap));
     }
 

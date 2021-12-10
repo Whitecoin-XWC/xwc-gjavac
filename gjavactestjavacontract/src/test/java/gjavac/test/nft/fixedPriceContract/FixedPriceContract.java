@@ -150,7 +150,7 @@ public class FixedPriceContract extends UvmContract<Storage> {
         emit("AskChanged", json.dumps(eventArg));
     }
 
-    public void onDepositAsset(String args) {
+    public void on_deposit_asset(String args) {
         Utils utils = new Utils();
         utils.checkState(this);
         UvmMap arg = (UvmMap) json.loads(args);

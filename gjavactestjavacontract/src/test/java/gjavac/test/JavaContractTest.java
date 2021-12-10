@@ -37,26 +37,26 @@ public class JavaContractTest {
 //        MainKt.main(classesToCompile);
 //    }
 //
-    @Test
-    public void testSimpleContractCompile() {
-        String class1 = testClassesDir + "/gjavac/test/simple/simpleContractTest";
-        String class2 = testClassesDir + "/gjavac/test/simple/simpleEntryPoint";
-        String class3 = testClassesDir + "/gjavac/test/simple/SimpleStorage";
+//    @Test
+//    public void testSimpleContractCompile() {
+//        String class1 = testClassesDir + "/gjavac/test/simple/simpleContractTest";
+//        String class2 = testClassesDir + "/gjavac/test/simple/simpleEntryPoint";
+//        String class3 = testClassesDir + "/gjavac/test/simple/SimpleStorage";
+//
+//        String[] classesToCompile = new String[]{class1, class2,class3, "-o", "outputs/simpleTest_results"};
+//        MainKt.main(classesToCompile);
+//    }
 
-        String[] classesToCompile = new String[]{class1, class2,class3, "-o", "outputs/simpleTest_results"};
-        MainKt.main(classesToCompile);
-    }
-
-    @Test
-    public void testSimple1ContractCompile() {
-        String class1 = testClassesDir + "/gjavac/test/simple2/simpleContractTest";
-        String class2 = testClassesDir + "/gjavac/test/simple2/simpleEntryPoint";
-//        String class3 = testClassesDir + "/gjavac/test/simple2/MultiOwnedContractSimpleInterface";
-        String class4 = testClassesDir + "/gjavac/test/simple2/Storage";
-
-        String[] classesToCompile = new String[]{class1, class2, class4,"-o", "outputs/simple2Test_results"};
-        MainKt.main(classesToCompile);
-    }
+//    @Test
+//    public void testSimple1ContractCompile() {
+//        String class1 = testClassesDir + "/gjavac/test/simple2/simpleContractTest";
+//        String class2 = testClassesDir + "/gjavac/test/simple2/simpleEntryPoint";
+////        String class3 = testClassesDir + "/gjavac/test/simple2/MultiOwnedContractSimpleInterface";
+//        String class4 = testClassesDir + "/gjavac/test/simple2/Storage";
+//
+//        String[] classesToCompile = new String[]{class1, class2, class4,"-o", "outputs/simple2Test_results"};
+//        MainKt.main(classesToCompile);
+//    }
 
 //    @Test
 //    public void testFixedPriceContractCompile() {
@@ -67,19 +67,6 @@ public class JavaContractTest {
 //        String class5 = testClassesDir + "/gjavac/test/nft/fixedPriceContract/MultiOwnedContractSimpleInterface";
 //
 //        String[] classesToCompile = new String[]{class1, class2, class3, class4, class5,"-o", "outputs/fixedPriceContractTest_results"};
-//        MainKt.main(classesToCompile);
-//    }
-
-//    @Test
-//    public void testErc721ContractCompile() {
-//        String class1 = testClassesDir + "/gjavac/test/nft/erc721/ContractEntrypoint";
-//        String class2 = testClassesDir + "/gjavac/test/nft/erc721/ERC721Contract";
-//        String class3 = testClassesDir + "/gjavac/test/nft/erc721/ERC721Storage";
-//        String class4 = testClassesDir + "/gjavac/test/nft/erc721/Utils";
-//        String class5 = testClassesDir + "/gjavac/test/nft/erc721/MultiOwnedContractsInterface";
-//
-//
-//        String[] classesToCompile = new String[]{class1, class2, class3, class4,class5, "-o", "outputs/erc721_results"};
 //        MainKt.main(classesToCompile);
 //    }
 //
@@ -108,18 +95,29 @@ public class JavaContractTest {
 //        String[] classesToCompile = new String[]{class1, class2, class3, class4,class5, "-o", "outputs/auction_results"};
 //        MainKt.main(classesToCompile);
 //    }
-
+//
 //    @Test
 //    public void testErc721ContractCompile() {
-//        String class1 = testClassesDir + "/gjavac/test/stableToken/DemoContractEntrypoint";
-//        String class2 = testClassesDir + "/gjavac/test/stableToken/MultiOwnedContractSimpleInterface";
-//        String class3 = testClassesDir + "/gjavac/test/stableToken/StableTokenContract";
-//        String class4 = testClassesDir + "/gjavac/test/stableToken/Storage";
-//        String class5 = testClassesDir + "/gjavac/test/stableToken/Utils";
+//        String class1 = testClassesDir + "/gjavac/test/nft/erc721/ContractEntrypoint";
+//        String class2 = testClassesDir + "/gjavac/test/nft/erc721/MultiOwnedContractsInterface";
+//        String class3 = testClassesDir + "/gjavac/test/nft/erc721/ERC721Contract";
+//        String class4 = testClassesDir + "/gjavac/test/nft/erc721/ERC721Storage";
+//        String class5 = testClassesDir + "/gjavac/test/nft/erc721/Utils";
 //
 //
-//        String[] classesToCompile = new String[]{class1, class2, class3, class4,class5, "-o", "outputs/stableTokenTest_results"};
+//        String[] classesToCompile = new String[]{class1, class2, class3, class4,class5, "-o", "outputs/erc721_results"};
 //        MainKt.main(classesToCompile);
 //    }
+
+    @Test
+    public void testIssueoneContractCompile() {
+        String class1 = testClassesDir + "/gjavac/test/issueone/ContractEntrypoint";
+        String class3 = testClassesDir + "/gjavac/test/issueone/IssueOneContract";
+        String class4 = testClassesDir + "/gjavac/test/issueone/Storage";
+
+
+        String[] classesToCompile = new String[]{class1, class3, class4, "-o", "outputs/issueone_results"};
+        MainKt.main(classesToCompile);
+    }
 
 }

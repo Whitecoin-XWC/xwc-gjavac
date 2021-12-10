@@ -11,7 +11,7 @@ import static gjavac.lib.UvmCoreLibs.error;
  */
 @Component
 public class Utils {
-    UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+    public UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
 
     public String NOT_INITED() {
         return "NOT_INITED";
@@ -198,7 +198,6 @@ public class Utils {
             fast_map_set("_ownedTokensIndex", lastTokenId, tostring(tokenIndex));
         }
 
-        //TODO table.remove( json_data,tointeger(lastTokenIndex))
         fast_map_set("_ownedTokens", from, json.dumps(json_data));
         fast_map_set("_ownedTokensIndex", tokenId, null);
     }
@@ -285,7 +284,6 @@ public class Utils {
     }
 
     public final void _burn(ERC721Contract self, String tokenId) {
-        gjavac.test.nft.erc721ForeverReward.Utils utils = new gjavac.test.nft.erc721ForeverReward.Utils();
         Object owner = _ownerOf(tokenId);
         _beforeTokenTransfer(self, tostring(owner), "", tokenId);
         _approve("", tokenId);

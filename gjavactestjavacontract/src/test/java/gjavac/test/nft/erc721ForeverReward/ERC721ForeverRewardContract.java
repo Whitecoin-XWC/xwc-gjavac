@@ -22,7 +22,7 @@ public class ERC721ForeverRewardContract extends UvmContract<ERC721ForeverReward
         this.getStorage().fixedSellContract = "";
     }
 
-    public void initToken(String arg) {
+    public void init_token(String arg) {
         Utils utils = new Utils();
         utils.checkAdmin(this);
         if (this.getStorage().getState() != utils.NOT_INITED()) {
@@ -204,7 +204,7 @@ public class ERC721ForeverRewardContract extends UvmContract<ERC721ForeverReward
         }
     }
 
-    public void onDepositAsset(String args) {
+    public void on_deposit_asset(String args) {
         Utils utils = new Utils();
         utils.checkState(this);
         UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
