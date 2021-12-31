@@ -794,6 +794,10 @@ open class JavaToUvmTranslator {
                 // 做成tonumber(...)
                 makeSingleArgumentSingleReturnGlobalFuncCall(proto, i, result, "tonumber", commentPrefix)
             }
+            Opcodes.INEG, Opcodes.FNEG, Opcodes.INEG, Opcodes.LNEG -> {
+                // neg
+                makeSingleArithmeticInstructions(proto, "neg", i, result, commentPrefix, false)
+            }
             Opcodes.DADD, Opcodes.FADD, Opcodes.IADD, Opcodes.LADD -> {
                 // add
                 makeArithmeticInstructions(proto, "add", i, result, commentPrefix, false)
