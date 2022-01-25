@@ -1,4 +1,4 @@
-package gjavac.test.simple;
+package gjavac.test.simple2;
 
 import gjavac.lib.UvmContract;
 
@@ -8,7 +8,7 @@ public class simpleEntryPoint {
     public UvmContract main() {
         print("hello java");
         simpleContractTest contract = new simpleContractTest();
-        contract.setStorage(new SimpleStorage());
+//        contract.setStorage(new Storage());
         print(contract);
 //        contract.init();
 

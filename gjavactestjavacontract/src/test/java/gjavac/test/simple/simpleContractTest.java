@@ -1,25 +1,21 @@
 package gjavac.test.simple;
 
 
-import static gjavac.lib.UvmCoreLibs.print;
-
 import gjavac.lib.Contract;
 import gjavac.lib.Offline;
 import gjavac.lib.UvmContract;
-import gjavac.test.dai.DaiPriceFeederForCdcContract;
 
-class Storage {
-    public String name; // both field and property supported
-}
+import static gjavac.lib.UvmCoreLibs.print;
 
 
-@Contract(storage = Storage.class)
-class simpleContractTest extends UvmContract<Storage> {
+@Contract(storage = SimpleStorage.class)
+class simpleContractTest extends UvmContract<SimpleStorage> {
     @Override
     public void init() {
         print("This is a simple contract testing init()...");
         this.getStorage().name = "A simple testing!";
     }
+
 
     @Offline
     public String ping(String arg) {
@@ -29,8 +25,9 @@ class simpleContractTest extends UvmContract<Storage> {
 
     @Offline
     public String getName(String arg) {
-        print("getName()!");
+        print("Pong!");
         return this.getStorage().name;
+//        return "name";
     }
 
 }

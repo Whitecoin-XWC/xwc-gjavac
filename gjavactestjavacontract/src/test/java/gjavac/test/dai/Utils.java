@@ -3,7 +3,6 @@ package gjavac.test.dai;
 import gjavac.lib.Component;
 import gjavac.lib.*;
 import gjavac.lib.UvmCoreLibs;
-import static gjavac.lib.UvmCoreLibs.*;
 
 @Component
 public class Utils {

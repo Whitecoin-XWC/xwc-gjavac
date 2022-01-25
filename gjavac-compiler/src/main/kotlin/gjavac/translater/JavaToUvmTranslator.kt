@@ -794,6 +794,10 @@ open class JavaToUvmTranslator {
                 // 做成tonumber(...)
                 makeSingleArgumentSingleReturnGlobalFuncCall(proto, i, result, "tonumber", commentPrefix)
             }
+            Opcodes.INEG, Opcodes.FNEG, Opcodes.INEG, Opcodes.LNEG -> {
+                // neg
+                makeSingleArithmeticInstructions(proto, "neg", i, result, commentPrefix, false)
+            }
             Opcodes.DADD, Opcodes.FADD, Opcodes.IADD, Opcodes.LADD -> {
                 // add
                 makeArithmeticInstructions(proto, "add", i, result, commentPrefix, false)
@@ -1080,7 +1084,7 @@ open class JavaToUvmTranslator {
                     return result
                 }
                 if (calledTypeName == "kotlin.jvm.internal.Intrinsics") {
-                    if (methodName == "checkParameterIsNotNull" || methodName == "checkExpressionValueIsNotNull" || methodName == "checkNotNull") {
+                    if (methodName == "checkParameterIsNotNull" || methodName == "checkExpressionValueIsNotNull" || methodName == "checkNotNull" || methodName == "checkNotNullParameter") {
                         //makeLoadConstInst(proto, i, result, proto.tmp1StackTopSlotIndex, 1, commentPrefix)
                         //pushIntoEvalStackTopSlot(proto,proto.tmp1StackTopSlotIndex,i,result,commentPrefix + " checkParameterIsNotNull")
                         popFromEvalStackToSlot(proto,proto.tmpMaxStackTopSlotIndex,i,result,commentPrefix)
