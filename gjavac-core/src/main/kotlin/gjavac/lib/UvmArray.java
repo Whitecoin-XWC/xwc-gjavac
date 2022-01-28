@@ -31,6 +31,28 @@ public class UvmArray<T> extends UvmTable {
         return items.size();
     }
 
+    public void removeByIndex(int index) {
+        if (index >= 1) {
+            if (items.isEmpty()) {
+                throw new java.lang.IndexOutOfBoundsException();
+            }
+            else if (index >= 1 && index <= items.size()) {
+                items.remove(index - 1);
+            }
+            else {
+                throw new java.lang.IndexOutOfBoundsException();
+            }
+        }
+        else {
+            if (!items.isEmpty()) {
+                hashitems.remove(index);
+            }
+            else {
+                throw new java.lang.IndexOutOfBoundsException();
+            }
+        }
+    }
+
     public void set(int index, Object value) {
         if (index >= 1) {
             if (items.isEmpty()) {
