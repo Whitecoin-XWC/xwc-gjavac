@@ -32,16 +32,34 @@ public class UvmArray<T> extends UvmTable {
     }
 
     public void set(int index, Object value) {
-        if (index >= 1 && index <= items.size()) {
-            items.set(index - 1, value);
-            if (value == null && index == items.size()) {
-                items.remove(items.size() - 1);
+        if (index >= 1) {
+            if (items.isEmpty()) {
+                throw new java.lang.IndexOutOfBoundsException();
             }
-        } else if (index == items.size() + 1) {
-            if (value != null) {
-                items.add(value);
+            if (index <= items.size()) {
+                items.set(index - 1, value);
+
+                // Mimic Lua array behavior where adding a null
+                // item at the end of a list removes the value
+
+                if (value == null && index == items.size()) {
+                    items.remove(items.size() - 1);
+                }
             }
-        } else {
+            else if (index == items.size() + 1) {
+                // This is an optimization in that we are adding a new
+                // item to the end of the list as opposed to replacing
+                // an existing item
+
+                if (value != null) {
+                    items.add(value);
+                }
+            }
+            else {
+                throw new java.lang.IndexOutOfBoundsException();
+            }
+        }
+        else {
             if (value != null) {
                 hashitems.put(index, value);
             } else {
