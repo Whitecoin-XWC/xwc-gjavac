@@ -71,7 +71,7 @@ public class ERC721ForeverRewardContract extends UvmContract<ERC721ForeverReward
             return;
         }
         utils.require(tostring(owner) == utils.getFromAddress()
-                || utils.isApprovedForAll(tostring(owner), utils.getFromAddress()), "ERC721: approve caller is not owner nor approved for all");
+                || utils.isApprovedForAll(tostring(owner), utils.getFromAddress()), "ERC721: approve caller is not owner nor approved for all" + owner + utils.getFromAddress());
         utils._approve(to, tokenId);
     }
 
@@ -92,11 +92,11 @@ public class ERC721ForeverRewardContract extends UvmContract<ERC721ForeverReward
         if (operatorApprovals != null) {
             data = tostring(operatorApprovals);
         }
-        UvmMap json_data = (UvmMap) totable(data);
-        json_data.set(operator, approved);
         UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+        UvmMap<Object> json_data = (UvmMap<Object>) totable(json.loads(data));
+        json_data.set(operator, approved);
         fast_map_set("_operatorApprovals", fromAddress, json.dumps(json_data));
-        UvmMap uvmMap = new UvmMap();
+        UvmMap<Object> uvmMap = UvmMap.create();
         uvmMap.set("owner", fromAddress);
         uvmMap.set("operator", operator);
         uvmMap.set("approved", approved);
@@ -111,7 +111,7 @@ public class ERC721ForeverRewardContract extends UvmContract<ERC721ForeverReward
         String to = parsed.get(2);
         String tokenId = parsed.get(3);
         String fromAddress = utils.getFromAddress();
-        utils.require(utils._isApprovedOrOwner(fromAddress, tokenId), "ERC721: transfer caller is not owner nor approved");
+        utils.require(utils._isApprovedOrOwner(fromAddress, tokenId), "ERC721: transfer caller is not owner nor approved" + fromAddress);
         utils._transfer(this, from, to, tokenId);
     }
 
@@ -127,7 +127,7 @@ public class ERC721ForeverRewardContract extends UvmContract<ERC721ForeverReward
             data = parsed.get(4);
         }
         if (is_valid_address(to)) {
-            utils.require(utils._isApprovedOrOwner(fromAddress, tokenId), "ERC721: transfer caller is not owner nor approved");
+            utils.require(utils._isApprovedOrOwner(fromAddress, tokenId), "ERC721: transfer caller is not owner nor approved" + fromAddress);
             utils._transfer(this, from, to, tokenId);
             utils._checkOnERC721Received(from, to, tokenId, data);
         } else {
@@ -208,7 +208,7 @@ public class ERC721ForeverRewardContract extends UvmContract<ERC721ForeverReward
         Utils utils = new Utils();
         utils.checkState(this);
         UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
-        UvmMap arg = (UvmMap) json.loads(args);
+        UvmMap arg = (UvmMap) totable(json.loads(args));
         long amount = tointeger(arg.get("num"));
         String symbol = tostring(arg.get("symbol"));
         String param = tostring(arg.get("param"));
@@ -221,13 +221,13 @@ public class ERC721ForeverRewardContract extends UvmContract<ERC721ForeverReward
         }
 
         String fromAddress = utils.getFromAddress();
-        UvmMap userAssets = (UvmMap) json.loads(tostring(fast_map_get("_nativeBalances", fromAddress)));
+        UvmMap userAssets = (UvmMap) totable(json.loads(tostring(fast_map_get("_nativeBalances", fromAddress))));
         long oldBalance = tointeger(userAssets.get(symbol));
         long newBalance = oldBalance + amount;
         userAssets.set(symbol, newBalance);
         String newUserAssetsStr = json.dumps(userAssets);
         fast_map_set("_nativeBalances", fromAddress, newUserAssetsStr);
-        UvmMap uvmMap = new UvmMap();
+        UvmMap<Object> uvmMap = UvmMap.create();
         uvmMap.set("address", fromAddress);
         uvmMap.set("symbol", symbol);
         uvmMap.set("change", amount);

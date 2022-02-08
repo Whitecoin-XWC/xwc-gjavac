@@ -63,7 +63,6 @@ public class Utils {
     public final Object _ownerOf(String tokenId) {
         Object owners = fast_map_get("_owners", tokenId);
         if (owners == null) {
-            error("ERC721: owner query for nonexistent token");
             return "";
         }
         return owners;
@@ -123,7 +122,7 @@ public class Utils {
         }
         UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         UvmMap uvmMap = (UvmMap) totable(json.loads(data));
-        if (uvmMap.get("operator") == null) {
+        if (uvmMap.get(operator) == null) {
             return false;
         }
         return true;
@@ -203,7 +202,7 @@ public class Utils {
         if (approve == null) {
             approve = "";
         }
-        return spender == owner || tostring(approve) == owner || isApprovedForAll(tostring(owner), spender);
+        return spender == owner || tostring(approve) == spender || isApprovedForAll(tostring(owner), spender);
     }
 
     public final void _addTokenToOwnerEnumeration(ERC721ForeverRewardContract self, String to, String tokenId) {
@@ -275,8 +274,11 @@ public class Utils {
         if (data == null) {
             array.set(1, "");
             array.set(2, 0);
+            return array;
         }
-        UvmArray<String> parseArgs = parseArgs(tostring(data), 2, "");
+        UvmArray<String> parseArgs = parseArgs(tostring(data), 2, "get trade price error");
+        array.set(1, parseArgs.get(1));
+        array.set(2, parseArgs.get(2));
         return parseArgs;
     }
 
@@ -336,9 +338,9 @@ public class Utils {
         }
         _beforeTokenTransfer(self, from, to, tokenId);
         _approve("", tokenId);
-        final long count = tointeger(fast_map_get("_balances", from));
+        final long count = fast_map_get("_balances", from) == null ? 0 : tointeger(fast_map_get("_balances", from));
         fast_map_set("_balances", from, tostring(count - 1));
-        final long to_count = tointeger(fast_map_get("_balances", to));
+        final long to_count = fast_map_get("_balances", to) == null ? 0 : tointeger(fast_map_get("_balances", to));
         fast_map_set("_balances", to, tostring(to_count + 1));
         fast_map_set("_owners", tokenId, to);
         UvmMap<String> uvmMap = new UvmMap<>();
@@ -353,7 +355,11 @@ public class Utils {
         require(is_valid_address(to), "ERC721: mint to the zero address");
         require(_ownerOf(tokenId) == "", "ERC721: token already minted");
         _beforeTokenTransfer(self, "", to, tokenId);
-        long to_count = tointeger(fast_map_get("_balances", to));
+        Object balances = fast_map_get("_balances", to);
+        long to_count = 0L;
+        if (balances != null) {
+            to_count = tointeger(balances);
+        }
         fast_map_set("_balances", to, tostring(to_count + 1));
         fast_map_set("_owners", tostring(tokenId), to);
         fast_map_set("_allTokenMinter", tostring(tokenId), to);
@@ -367,11 +373,10 @@ public class Utils {
     }
 
     public final boolean _checkOnERC721Received(String from, String to, String tokenId, String _data) {
-        if (is_valid_address(to)) {
+        if (is_valid_contract_address(to)) {
             MultiOwnedContractsInterface IERC721Receiver = importContractFromAddress(MultiOwnedContractsInterface.class, to);
             if (IERC721Receiver != null) {
-                boolean ret = IERC721Receiver.onERC721Received(getFromAddress(), from, tokenId, _data);
-                require(ret, "ERC721: transfer to non ERC721Receiver implementer");
+                require(true, "ERC721: transfer to non ERC721Receiver implementer");
             } else {
                 error("ERC721: transfer to non ERC721Receiver implementer");
                 return false;
@@ -381,7 +386,7 @@ public class Utils {
     }
 
     public final void _safeMint(ERC721ForeverRewardContract self, String to, String tokenId, String data, long feeRate) {
-        if (is_valid_address(to)) {
+        if (is_valid_contract_address(to)) {
             _mint(self, to, tokenId, feeRate);
             _checkOnERC721Received(getFromAddress(), to, tokenId, data);
         } else {
@@ -393,7 +398,7 @@ public class Utils {
         Object owner = _ownerOf(tokenId);
         _beforeTokenTransfer(self, tostring(owner), "", tokenId);
         _approve("", tokenId);
-        long count = tointeger(fast_map_get("_balances", tostring(owner)));
+        long count = fast_map_get("_balances", tostring(owner)) == null ? 0 : tointeger(fast_map_get("_balances", tostring(owner)));
         fast_map_set("_balances", tostring(owner), tostring(count - 1));
         fast_map_set("_owners", tokenId, "");
 
