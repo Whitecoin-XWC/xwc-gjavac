@@ -11,9 +11,6 @@ import static gjavac.lib.UvmCoreLibs.*;
 @Contract(storage = AuctionStorage.class)
 public class AuctionContract extends UvmContract<AuctionStorage> {
 
-    UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
-    UvmSafeMathModule safemathModule = (UvmSafeMathModule) UvmCoreLibs.importModule(UvmSafeMathModule.class, "safemath");
-
     @Override
     public void init() {
         print("auction contract creating");
@@ -51,7 +48,7 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         this.getStorage().feeRate = 5L;
     }
 
-    public final long createAuction(String args) {
+    public final String createAuction(String args) {
         Utils utils = new Utils();
         utils.checkState(this);
         UvmArray<String> parsed = utils.parseArgs(args, 6, "argument format error, need format: tokenId,tokenAddr,duration,reservePrice,symbol,minDeltaPrice");
@@ -70,7 +67,7 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         utils.require(multiOwnedContractSimpleInterface.supportsERC721Interface(), "tokenContract does not support ERC721 interface");
         String curContract = get_current_contract_address();
         multiOwnedContractSimpleInterface.transferFrom(owner + "," + curContract + "," + tokenId);
-        UvmMap uvmMap = new UvmMap();
+        UvmMap<Object> uvmMap = UvmMap.create();
         uvmMap.set("tokenId", tokenId);
         uvmMap.set("tokenContract", tokenAddr);
         uvmMap.set("amount", 0);
@@ -81,9 +78,10 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         uvmMap.set("tokenOwner", fromAddress);
         uvmMap.set("bidder", "");
         uvmMap.set("symbol", symbol);
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         fast_map_set("auctions", tostring(auctionId), json.dumps(uvmMap));
         emit("AuctionCreated", json.dumps(uvmMap));
-        return auctionId;
+        return tostring(auctionId);
     }
 
     public final void setAuctionReservePrice(String args) {
@@ -92,15 +90,16 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         UvmArray<String> parsed = utils.parseArgs(args, 2, "argument format error, need format: to,tokenId");
         String auctionId = parsed.get(1);
         String reservePrice = parsed.get(2);
-        utils.require(fast_map_get("auctions", auctionId) == null, "auction Id not exists");
-        String auctionData = tostring(fast_map_get("auctions", auctionId));
-        UvmMap auctionObject = (UvmMap) json.loads(auctionData);
+        utils.require(tostring(fast_map_get("auctions", tostring(auctionId))) != null, "auction Id not exists");
+        String auctionData = tostring(fast_map_get("auctions", tostring(auctionId)));
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+        UvmMap auctionObject = (UvmMap) totable(json.loads(auctionData));
         utils.require(fromAddress == auctionObject.get("tokenOwner"), "Must be auction token owner");
         utils.require(tointeger(auctionObject.get("firstBidTime")) == 0, "Auction has already started");
         auctionObject.set("reservePrice", reservePrice);
-        fast_map_set("auctions", auctionId, json.dumps(auctionObject));
-        UvmMap uvmMap = new UvmMap();
-        uvmMap.set("auctionId", auctionId);
+        fast_map_set("auctions", tostring(auctionId), json.dumps(auctionObject));
+        UvmMap<Object> uvmMap = UvmMap.create();
+        uvmMap.set("auctionId", tostring(auctionId));
         uvmMap.set("tokenId", auctionObject.get("tokenId"));
         uvmMap.set("tokenContract", auctionObject.get("tokenContract"));
         uvmMap.set("reservePrice", reservePrice);
@@ -113,15 +112,16 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         UvmArray<String> parsed = utils.parseArgs(args, 2, "argument format error, need format: to,tokenId");
         String auctionId = parsed.get(1);
         String minDeltaPrice = parsed.get(2);
-        utils.require(fast_map_get("auctions", auctionId) == null, "auction Id not exists");
-        String auctionData = tostring(fast_map_get("auctions", auctionId));
-        UvmMap auctionObject = (UvmMap) json.loads(auctionData);
+        utils.require(tostring(fast_map_get("auctions", tostring(auctionId))) != null, "auction Id not exists");
+        String auctionData = tostring(fast_map_get("auctions", tostring(auctionId)));
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+        UvmMap auctionObject = (UvmMap)totable( json.loads(auctionData));
         utils.require(fromAddress == auctionObject.get("tokenOwner"), "Must be auction token owner");
         utils.require(tointeger(auctionObject.get("firstBidTime")) == 0, "Auction has already started");
         auctionObject.set("minDeltaPrice", minDeltaPrice);
-        fast_map_set("auctions", auctionId, json.dumps(auctionObject));
-        UvmMap uvmMap = new UvmMap();
-        uvmMap.set("auctionId", auctionId);
+        fast_map_set("auctions", tostring(auctionId), json.dumps(auctionObject));
+        UvmMap<Object> uvmMap = UvmMap.create();
+        uvmMap.set("auctionId", tostring(auctionId));
         uvmMap.set("tokenId", auctionObject.get("tokenId"));
         uvmMap.set("tokenContract", auctionObject.get("tokenContract"));
         uvmMap.set("reservePrice", minDeltaPrice);
@@ -131,12 +131,13 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
     public final void on_deposit_asset(String args) {
         Utils utils = new Utils();
         utils.checkState(this);
-        UvmMap arg = (UvmMap) json.loads(args);
-        long amout = tointeger(arg.get("num"));
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+        UvmMap arg = (UvmMap) totable(json.loads(args));
+        long amount = tointeger(arg.get("num"));
         String symbol = tostring(arg.get("symbol"));
         String param = tostring(arg.get("param"));
         print(symbol);
-        if (amout < 0) {
+        if (amount < 0) {
             error("deposit should greater than 0");
             return;
         }
@@ -145,16 +146,17 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
             return;
         }
         String fromAddress = utils.getFromAddress();
-        utils._createBid(this, param, tostring(amout), symbol);
+        utils._createBid(this, param, tostring(amount), symbol);
     }
 
     public final void endAuction(String auctionId) {
         Utils utils = new Utils();
         utils.checkState(this);
         String fromAddress = utils.getFromAddress();
-        utils.require(fast_map_get("auctions", auctionId) == null, "auction Id not exists");
-        String auctionData = tostring(fast_map_get("auctions", auctionId));
-        UvmMap auctionObject = (UvmMap) json.loads(auctionData);
+        utils.require(tostring(fast_map_get("auctions", tostring(auctionId))) != null, "auction Id not exists");
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+        String auctionData = tostring(fast_map_get("auctions", tostring(auctionId)));
+        UvmMap auctionObject = (UvmMap) totable(json.loads(auctionData));
         String lastBidder = tostring(auctionObject.get("bidder"));
         long blockNum = get_header_block_num();
         long firstBidTime = tointeger(auctionObject.get("firstBidTime"));
@@ -163,10 +165,11 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         utils.require(firstBidTime != 0, "Auction hasn't begun");
         utils.require(blockNum >= firstBidTime + duration, "Auction hasn't completed");
         MultiOwnedContractSimpleInterface multiOwnedContractSimpleInterface = importContractFromAddress(MultiOwnedContractSimpleInterface.class, tostring(auctionObject.get("tokenContract")));
-        UvmMap tokenData = (UvmMap) json.loads(multiOwnedContractSimpleInterface.queryTokenMinter(tostring(auctionObject.get("tokenId"))));
+        UvmMap tokenData = (UvmMap) totable(json.loads(multiOwnedContractSimpleInterface.queryTokenMinter(tostring(auctionObject.get("tokenId")))));
         long copyRightPayFee = tointeger(tokenData.get("fee"));
         String tokenMinter = tostring(tokenData.get("minter"));
         long closePrice = tointeger(auctionObject.get("amount"));
+        UvmSafeMathModule safemathModule = (UvmSafeMathModule) UvmCoreLibs.importModule(UvmSafeMathModule.class, "safemath");
         UvmBigInt writePrice = safemathModule.bigint(
                 safemathModule.mul(
                         safemathModule.bigint(closePrice), safemathModule.div(
@@ -180,10 +183,10 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         if (safemathModule.gt(copyRightFee, safemathModule.bigint(0))) {
             utils.withdrawNativeAssetPrivate(this, tokenMinter, tostring(auctionObject.get("symbol")), tostring(copyRightFee));
         }
-        fast_map_set("auctions", auctionId, "{}");
+        fast_map_set("auctions", tostring(auctionId), "{}");
         multiOwnedContractSimpleInterface.safeTransferFrom(curContract + "," + lastBidder + "," + auctionObject.get("tokenId"));
-        UvmMap uvmMap = new UvmMap();
-        uvmMap.set("auctionId", auctionId);
+        UvmMap<Object> uvmMap = UvmMap.create();
+        uvmMap.set("auctionId", tostring(auctionId));
         uvmMap.set("tokenId", auctionObject.get("tokenId"));
         uvmMap.set("tokenContract", auctionObject.get("tokenContract"));
         uvmMap.set("tokenOwner", auctionObject.get("tokenOwner"));
@@ -198,17 +201,18 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         Utils utils = new Utils();
         utils.checkState(this);
         String fromAddress = utils.getFromAddress();
-        utils.require(fast_map_get("auctions", auctionId) == null, "auction Id not exists");
-        String auctionData = tostring(fast_map_get("auctions", auctionId));
-        UvmMap auctionObject = (UvmMap) json.loads(auctionData);
+        utils.require(tostring(fast_map_get("auctions", tostring(auctionId))) != null, "auction Id not exists");
+        String auctionData = tostring(fast_map_get("auctions", tostring(auctionId)));
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+        UvmMap auctionObject = (UvmMap) totable(json.loads(auctionData));
         utils.require(fromAddress == auctionObject.get("tokenOwner"), "Must be auction token owner");
         utils.require(tointeger(auctionObject.get("firstBidTime")) == 0, "Auction has already started");
         MultiOwnedContractSimpleInterface tokenContract = importContractFromAddress(MultiOwnedContractSimpleInterface.class, tostring(auctionObject.get("tokenContract")));
         String curContract = get_current_contract_address();
         tokenContract.safeTransferFrom(curContract + "," + auctionObject.get("tokenOwner") + "," + auctionObject.get("tokenId"));
-        fast_map_set("auctions", auctionId, "{}");
-        UvmMap uvmMap = new UvmMap();
-        uvmMap.set("auctionId", auctionId);
+        fast_map_set("auctions", tostring(auctionId), "{}");
+        UvmMap<Object> uvmMap = UvmMap.create();
+        uvmMap.set("auctionId", tostring(auctionId));
         uvmMap.set("tokenId", auctionObject.get("tokenId"));
         uvmMap.set("tokenContract", auctionObject.get("tokenContract"));
         uvmMap.set("operator", "cancel");
@@ -230,18 +234,19 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         String symbol = parsed.get(2);
         String fromAddress = utils.getFromAddress();
         utils.require(amount > 0, "amount must positive");
-        utils.updateReward(this, 0 - amount, symbol);
+        utils.updateReward(this, 0-amount, symbol);
         utils.withdrawNativeAssetPrivate(this, fromAddress, symbol, tostring(amount));
-        UvmMap uvmMap = new UvmMap();
+        UvmMap<Object> uvmMap = UvmMap.create();
         uvmMap.set("amount", amount);
         uvmMap.set("symbol", symbol);
         uvmMap.set("admin", fromAddress);
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         emit("AdminWithdrawReward", json.dumps(uvmMap));
     }
 
     @Offline
     public final String getAuction(String auctionId) {
-        return tostring(fast_map_get("auctions", auctionId));
+        return tostring(fast_map_get("auctions", tostring(auctionId)));
     }
 
     @Offline
@@ -251,7 +256,7 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
 
     @Offline
     public final String getInfo() {
-        UvmMap uvmMap = new UvmMap();
+        UvmMap<Object> uvmMap = UvmMap.create();
         uvmMap.set("timeBuffer", this.getStorage().timeBuffer);
         uvmMap.set("auctionCount", this.getStorage().auctionCount);
         uvmMap.set("state", this.getStorage().state);
@@ -259,6 +264,7 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         uvmMap.set("feeRate", this.getStorage().feeRate);
         uvmMap.set("totalReward", this.getStorage().totalReward);
         uvmMap.set("currentReward", this.getStorage().currentReward);
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
         return json.dumps(uvmMap);
     }
 

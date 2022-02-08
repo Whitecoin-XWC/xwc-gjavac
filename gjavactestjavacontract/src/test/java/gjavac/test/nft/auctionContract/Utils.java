@@ -150,7 +150,7 @@ public class Utils {
             return;
         }
 
-        UvmMap uvmMap = new UvmMap();
+        UvmMap<Object> uvmMap = UvmMap.create();
         uvmMap.set("address", from);
         uvmMap.set("symbol", symbol);
         uvmMap.set("change", 0 - amount);
@@ -160,9 +160,9 @@ public class Utils {
 
     public final void _createBid(AuctionContract self, String auctionId, String amount, String symbol) {
         String fromAddress = getFromAddress();
-        require(fast_map_get("auctions", auctionId) == null, "auction Id not exists");
-        String auctionData = tostring(fast_map_get("auctions", auctionId));
-        UvmMap auctionObject = (UvmMap) json.loads(auctionData);
+        require(tostring(fast_map_get("auctions", tostring(auctionId))) != null, "auction Id not exists");
+        String auctionData = tostring(fast_map_get("auctions", tostring(auctionId)));
+        UvmMap auctionObject = (UvmMap) totable(json.loads(auctionData));
         String lastBidder = tostring(auctionObject.get("bidder"));
         long block_num = tointeger(get_header_block_num());
         require(symbol == auctionObject.get("symbol"), "The auction must use the same asset.");
@@ -179,15 +179,15 @@ public class Utils {
         }
         auctionObject.set("amount", amount);
         auctionObject.set("bidder", fromAddress);
-        fast_map_set("auctions", auctionId, json.dumps(auctionObject));
+        fast_map_set("auctions", tostring(auctionId), json.dumps(auctionObject));
         boolean extended = false;
         if (firstBidTime + duration - block_num < self.getStorage().timeBuffer) {
             long oldDuration = tointeger(auctionObject.get("duration"));
             long newDuration = oldDuration + tointeger(self.getStorage().timeBuffer) - (firstBidTime + duration) - block_num;
             auctionObject.set("duration", newDuration);
         }
-        UvmMap uvmMap = new UvmMap();
-        uvmMap.set("auctionId", auctionId);
+        UvmMap<Object> uvmMap = UvmMap.create();
+        uvmMap.set("auctionId", tostring(auctionId));
         uvmMap.set("tokenId", auctionObject.get("tokenId"));
         uvmMap.set("tokenContract", auctionObject.get("tokenContract"));
         uvmMap.set("from_addr", fromAddress);
