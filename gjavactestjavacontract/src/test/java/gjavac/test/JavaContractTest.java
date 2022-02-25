@@ -49,6 +49,17 @@ public class JavaContractTest {
         MainKt.main(classesToCompile);
     }
 
+    @Test
+    public void testCCSourceContractCompile() {
+        String class1 = testClassesDir + "/gjavac/test/ccsource/ContractEntrypoint";
+        String class2 = testClassesDir + "/gjavac/test/ccsource/MultiOwnedContractSimpleInterface";
+        String class3 = testClassesDir + "/gjavac/test/ccsource/SourceContract";
+        String class4 = testClassesDir + "/gjavac/test/ccsource/Storage";
+        String class5 = testClassesDir + "/gjavac/test/ccsource/Utils";
+        String[] classesToCompile = new String[]{class1, class2,class3,class4,class5,"-o","outputs/ccsourceTest_results"};
+        MainKt.main(classesToCompile);
+    }
+
 //    @Test
 //    public void testSimple1ContractCompile() {
 //        String class1 = testClassesDir + "/gjavac/test/simple2/simpleContractTest";

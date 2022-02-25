@@ -1,11 +1,12 @@
 package gjavac.test.simple;
 
-import gjavac.lib.Contract;
-import gjavac.lib.Offline;
-import gjavac.lib.UvmContract;
-import gjavac.lib.UvmCoreLibs;
+import gjavac.lib.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static gjavac.lib.UvmCoreLibs.print;
+import static gjavac.lib.UvmCoreLibs.tojsonstring;
 
 /**
  * Description: gjavac
@@ -22,17 +23,36 @@ public class SimpleContractTest extends UvmContract<SimpleStorage> {
         this.getStorage().name = "A simple testing!";
     }
 
-    @Offline
-    public String ping(String var1) {
-        UvmCoreLibs.print("Pong!");
-        return "Pong!";
-    }
+//    @Offline
+//    public String ping(String var1) {
+//        UvmCoreLibs.print("Pong!");
+//        return "Pong!";
+//    }
+//
+//    @Offline
+//    public String getName(String var1) {
+//        UvmCoreLibs.print("Pong!");
+//        return this.getStorage().name;
+//    }
 
     @Offline
-    public String getName(String var1) {
-        UvmCoreLibs.print("Pong!");
-        return this.getStorage().name;
+    public Object array(String arg) {
+////        UvmStringModule stringModule = (UvmStringModule) UvmCoreLibs.importModule(UvmStringModule.class, "string");
+////        UvmArray parsed = stringModule.split(arg, ",");
+////        UvmMap map = UvmMap.create();
+////        map.set("0", parsed.get(0));
+////        map.set("1", parsed.get(1));
+////        map.set("2", parsed.get(2));
+//        UvmArray uvmArray = UvmArray.create();
+//        uvmArray.set(100,100);
+//        return uvmArray.get(100);
+        ArrayList arrayList = new ArrayList();
+        arrayList.add(1);
+        return null;
+
     }
+
+
 }
 
 class SimpleStorage {

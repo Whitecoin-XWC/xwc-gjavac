@@ -8,7 +8,7 @@ public class UvmArray<T> extends UvmTable {
     }
 
     public void add(T value) {
-        items.add(value);
+//        items.add(value);
     }
 
     public void pop() {
@@ -18,13 +18,15 @@ public class UvmArray<T> extends UvmTable {
     }
 
     public T get(int index) {
-        if (index >= 1 && index <= items.size()) {
-            return (T) items.get(index - 1);
-        } else if (hashitems.containsKey(index)) {
-            return (T) hashitems.get(index);
-        } else {
-            return null;
-        }
+//        if (index >= 1 && index <= items.size()) {
+//            return (T) items.get(index - 1);
+//        } else if (hashitems.containsKey(index)) {
+//            return (T) hashitems.get(index);
+//        } else {
+//            return null;
+//        }
+//        return (T) items.get(index);
+        return null;
     }
 
     public int size() {
@@ -32,22 +34,22 @@ public class UvmArray<T> extends UvmTable {
     }
 
     public void set(int index, Object value) {
-        if (index >= 1 && index <= items.size()) {
-            items.set(index - 1, value);
-            if (value == null && index == items.size()) {
-                items.remove(items.size() - 1);
-            }
-        } else if (index == items.size() + 1) {
-            if (value != null) {
-                items.add(value);
-            }
-        } else {
-            if (value != null) {
-                hashitems.put(index, value);
-            } else {
-                hashitems.remove(index);
-            }
-        }
+//        if (index >= 1 && index <= items.size()) {
+//            items.set(index - 1, value);
+//            if (value == null && index == items.size()) {
+//                items.remove(items.size() - 1);
+//            }
+//        } else if (index == items.size() + 1) {
+//            if (value != null) {
+//                items.add(value);
+//            }
+//        } else {
+//            if (value != null) {
+//                hashitems.put(index, value);
+//            } else {
+//                hashitems.remove(index);
+//            }
+//        }
     }
 
     public ArrayIterator ipairs() {
