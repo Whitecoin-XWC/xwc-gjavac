@@ -1,7 +1,7 @@
 package gjavac.lib
 
 abstract class UvmContract<T> {
-    var storage: T? = null
+    val storage: T? = null
     abstract fun init()
     open fun on_deposit(num: Long){
 
