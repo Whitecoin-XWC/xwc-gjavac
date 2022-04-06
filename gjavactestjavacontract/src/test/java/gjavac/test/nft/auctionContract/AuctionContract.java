@@ -197,6 +197,11 @@ public class AuctionContract extends UvmContract<AuctionStorage> {
         emit("AuctionEnded", json.dumps(uvmMap));
     }
 
+    public final void test_auction(){
+        Utils utils = new Utils();
+        utils.updateReward(this,10L,"XWC");
+    }
+
     public final void cancelAuction(String auctionId) {
         Utils utils = new Utils();
         utils.checkState(this);

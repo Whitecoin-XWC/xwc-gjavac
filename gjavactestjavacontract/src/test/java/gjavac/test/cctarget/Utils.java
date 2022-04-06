@@ -1,6 +1,8 @@
-package gjavac.test.ccsource;
+package gjavac.test.cctarget;
 
 import gjavac.lib.*;
+import gjavac.test.ccsource.MultiOwnedContractSimpleInterface;
+import gjavac.test.ccsource.SourceContract;
 
 import static gjavac.lib.UvmCoreLibs.*;
 
@@ -64,11 +66,11 @@ public class Utils {
         return fromAddress;
     }
 
-    public void switchOn(SourceContract self) {
+    public void switchOn(TargetContract self) {
         require(self.getStorage()._switch, "business switch is off!");
     }
 
-    public final void withdrawNativeAssetPrivate(SourceContract self, String from, String symbol, String amountStr) {
+    public final void withdrawNativeAssetPrivate(TargetContract self, String from, String symbol, String amountStr) {
         checkState(self);
         long amount = tointeger(amountStr);
         if (isBlank(symbol) || amount <= 0) {
@@ -89,45 +91,23 @@ public class Utils {
         emit("NativeBalanceChange", tojsonstring(uvmMap));
     }
 
-    public void _releaseAsset(SourceContract self, String _recviceAddress, String _symbol, long _amount) {
-        if (self.getStorage().nativeSymbol == _symbol) {
-            //check if eought asset to release
-            require(tointeger(get_contract_balance_amount(caller_address(), _symbol)) >= _amount, "Insufficient native asset to release!");
 
-            //transfer native asset
-            withdrawNativeAssetPrivate(self, _recviceAddress, self.getStorage().nativeSymbol, tostring(_amount));
-        } else {
-            //get token contract address by symbol
-            String tokenContract = tostring(self.getStorage().tokenContracts.get(_symbol));
-            require(is_valid_address(tokenContract), "Symbol hasn't registered.");
-
-            MultiOwnedContractSimpleInterface multiOwnedContractSimpleInterface = importContractFromAddress(MultiOwnedContractSimpleInterface.class, tokenContract);
-
-            //check if eought asset to release
-            require(multiOwnedContractSimpleInterface.balanceOf(get_from_address()) >= _amount, "Insufficient token balance to release!");
-
-            // Transfer token
-            multiOwnedContractSimpleInterface.safeTransfer(_recviceAddress, _amount);
-        }
-
-    }
-
-    public void onlyWitness(SourceContract self) {
+    public void onlyWitness(TargetContract self) {
         require(caller_address() == self.getStorage().witness, "CCBase: caller is not the witness!");
     }
 
-    public void check_caller_frame_valid(SourceContract sourceContract) {
+    public void check_caller_frame_valid(TargetContract sourceContract) {
 
     }
 
-    public void checkAdmin(SourceContract self) {
+    public void checkAdmin(TargetContract self) {
         String fromAddr = get_from_address();
         if (self.getStorage().owner != fromAddr) {
             UvmCoreLibs.error("you are not admin, can't call this function");
         }
     }
 
-    public void checkState(SourceContract self) {
+    public void checkState(TargetContract self) {
         String state = self.getStorage().state;
         if (state == this.NOT_INITED()) {
             UvmCoreLibs.error("contract token not inited");
@@ -136,28 +116,6 @@ public class Utils {
         } else if (state == this.STOPPED()) {
             UvmCoreLibs.error("contract stopped");
         }
-    }
-
-    public void _lockNativeAsset(SourceContract self, String remoteAddress, String symbol, long amount) {
-        require(remoteAddress.length() == self.getStorage().VALID_REMOTE_ADDRESS_LENGTH, "Invalid length of remote address!");
-        require(amount > 0, "Can't lock 0 amount!");
-
-        // Make sure there is some native asset to lock
-        String from_address = get_from_address();
-        if (from_address != caller_address()) {
-            error("only common user account can lock balance");
-        }
-
-        long balance = get_contract_balance_amount(get_current_contract_address(), symbol);
-        require(tointeger(balance) <= self.getStorage().nativeCap, "Exceed native asset lock limit!");
-        self.getStorage().eventNonce = self.getStorage().eventNonce + 1;
-        UvmMap uvmMap = UvmMap.create();
-        uvmMap.set("nonce", self.getStorage().eventNonce);
-        uvmMap.set("amount", amount);
-        uvmMap.set("symbol", symbol);
-        uvmMap.set("localAddress", get_from_address());
-        uvmMap.set("remoteAddress", remoteAddress);
-        emit("AssetLocked", tojsonstring(uvmMap));
     }
 
     public final boolean isBlank(String str) {

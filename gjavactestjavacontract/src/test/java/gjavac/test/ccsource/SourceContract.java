@@ -15,50 +15,76 @@ public class SourceContract extends UvmContract<Storage> {
     public void init() {
         Storage storage = this.getStorage();
         storage.state = "NOT_INITED";
-        storage._owner = caller_address();
-        storage._witness = caller_address();
-        storage._monitor = caller_address();
+        storage.owner = caller_address();
+        storage.witness = caller_address();
+        storage.monitor = caller_address();
         storage._switch = true;
-        storage._lastHandledNonce = 0L;
-        storage._eventNonce = 0L;
-        storage.nativeSymbol = "ETH";
-        storage.nativeCap = 100 * 1000000000000000000L;
+        storage.lastHandledNonce = 0L;
+        storage.eventNonce = 0L;
+        storage.nativeSymbol = "XWC";
+        storage.nativeCap = 10000000 * 100000000L;
         storage.tokenContracts = UvmMap.create();
-        storage.tokenCaps = UvmMap.create();
-        storage.rollbackNonces = UvmMap.<Boolean>create();
-        storage.handledNonces = UvmMap.<Boolean>create();
+        storage.tokenCaps = new UvmMap<>();
+        storage.rollbackNonces = new UvmMap<>();
+        storage.handledNonces = new UvmMap<>();
     }
 
-    /* =========================== offline =========================== */
     @Offline
-    public void setNativeSymbol(String _newSymbol) {
+    public void setNativeSymbol(String newSymbol) {
         Utils utils = new Utils();
         utils.checkAdmin(this);
-        this.getStorage().nativeSymbol = _newSymbol;
+        this.getStorage().nativeSymbol = newSymbol;
     }
 
     @Offline
-    public String getTokenContract(String _symbol) {
-        return tostring(this.getStorage().tokenContracts.get(_symbol));
+    public String getNativeSymbol() {
+        Utils utils = new Utils();
+        utils.checkAdmin(this);
+        return this.getStorage().nativeSymbol;
     }
 
     @Offline
-    public long getTokenCap(String _symbol) {
-        return tointeger(this.getStorage().tokenCaps.get(_symbol));
+    public long getNativeCap() {
+        Utils utils = new Utils();
+        utils.checkAdmin(this);
+        return this.getStorage().nativeCap;
     }
 
-    /* ========================== offline ============================= */
+    @Offline
+    public String getTokenContract(String symbol) {
+        return tostring(fast_map_get("tokenContracts", symbol));
+    }
 
-    public void setNativeCap(long _newCap) {
+    @Offline
+    public Object getTokenCap(String symbol) {
+        return tostring(fast_map_get("tokenCaps", symbol));
+    }
+
+    @Offline
+    public String getContractCurrent() {
+        return get_current_contract_address();
+    }
+
+    @Offline
+    public Object getContractBalances() {
+        return get_contract_balance_amount(get_current_contract_address(), "XWC");
+    }
+
+
+    public void init_token() {
+        this.getStorage().state = "COMMON";
+    }
+
+    public void setNativeCap(long newCap) {
         Utils utils = new Utils();
         utils.checkAdmin(this);
         utils.checkState(this);
         long old_cap = this.getStorage().nativeCap;
-        this.getStorage().nativeCap = _newCap;
+        this.getStorage().nativeCap = newCap;
         UvmMap uvmMap = UvmMap.create();
-        uvmMap.set("nativeSymbol", this.getStorage().nativeSymbol);
-        uvmMap.set("old_cap", old_cap);
-        uvmMap.set("_newCap", _newCap);
+        uvmMap.set("symbol", this.getStorage().nativeSymbol);
+        uvmMap.set("oldCap", old_cap);
+        uvmMap.set("newCap", newCap);
         emit("TokenCapChanged", tojsonstring(uvmMap));
     }
 
@@ -67,14 +93,14 @@ public class SourceContract extends UvmContract<Storage> {
         utils.checkAdmin(this);
         utils.checkState(this);
         UvmArray<String> parsed = utils.parseArgs(arg, 2, "need arg symbol,newCap");
-        String _symbol = parsed.get(1);
-        long _newCap = tointeger(parsed.get(2));
-        long old_cap = tointeger(this.getStorage().tokenCaps.get(_symbol));
-        this.getStorage().tokenCaps.set(_symbol, _newCap);
+        String symbol = parsed.get(1);
+        long newCap = tointeger(parsed.get(2));
+        Object old_cap = fast_map_get("tokenCaps", symbol);
+        fast_map_set("tokenCaps", symbol, newCap);
         UvmMap uvmMap = UvmMap.create();
-        uvmMap.set("_symbol", _symbol);
-        uvmMap.set("old_cap", old_cap);
-        uvmMap.set("_newCap", _newCap);
+        uvmMap.set("symbol", symbol);
+        uvmMap.set("oldCap", old_cap);
+        uvmMap.set("newCap", newCap);
         emit("TokenCapChanged", tojsonstring(uvmMap));
     }
 
@@ -82,87 +108,87 @@ public class SourceContract extends UvmContract<Storage> {
         Utils utils = new Utils();
         utils.checkAdmin(this);
         utils.checkState(this);
-        UvmArray<String> parsed = utils.parseArgs(arg, 3, "need _symbol,_contract,_cap");
-        String _symbol = parsed.get(1);
-        String _contract = parsed.get(2);
-        long _cap = tointeger(parsed.get(3));
-        utils.require(_symbol.length() > 0 && _symbol.length() < 10, "Symbol can't be null or longer than 9 string!");
-        utils.require(this.getStorage().nativeSymbol == _symbol, "Native symbol is reserved!");
-        utils.require(is_valid_contract_address(_contract), "Isn't a contract address!");
-        utils.require(this.getStorage().tokenContracts.get(_symbol) == _contract, "Token contract with same symbol has been registered!");
-        this.getStorage().tokenContracts.set(_symbol, _contract);
-        this.getStorage().tokenCaps.set(_symbol, _cap);
+        UvmArray<String> parsed = utils.parseArgs(arg, 3, "need symbol,contract,cap");
+        String symbol = parsed.get(1);
+        String contract = parsed.get(2);
+        long cap = tointeger(parsed.get(3));
+        utils.require(fast_map_get("tokenContracts", symbol) == null, "Token contract with same symbol has been registered!");
+        fast_map_set("tokenContracts", symbol, contract);
+        fast_map_set("tokenCaps", symbol, cap);
         UvmMap uvmMap = UvmMap.create();
-        uvmMap.set("_symbol", _symbol);
-        uvmMap.set("_contract", _contract);
-        uvmMap.set("_cap", _cap);
+        uvmMap.set("symbol", symbol);
+        uvmMap.set("contractAddress", contract);
+        uvmMap.set("cap", cap);
         emit("TokenRegistered", tojsonstring(uvmMap));
-        uvmMap.set("_contract", "0");
-        emit("TokenCapChanged", tojsonstring(uvmMap));
+        UvmMap uvmMap1 = UvmMap.create();
+        uvmMap1.set("symbol", symbol);
+        uvmMap1.set("oldCap", 0);
+        uvmMap1.set("newCap", cap);
+        emit("TokenCapChanged", tojsonstring(uvmMap1));
+    }
+
+
+    // native lock
+    public void on_deposit_asset(String args) {
+        Utils utils = new Utils();
+        utils.switchOn(this);
+        utils.checkState(this);
+        UvmJsonModule json = (UvmJsonModule) UvmCoreLibs.importModule(UvmJsonModule.class, "json");
+        UvmMap arg = (UvmMap) totable(json.loads(args));
+        long amount = tointeger(arg.get("num"));
+        String symbol = tostring(arg.get("symbol"));
+        String remoteAddress = tostring(arg.get("param"));
+        utils._lockNativeAsset(this, remoteAddress, symbol, amount);
     }
 
     public void lockAsset(String arg) {
         Utils utils = new Utils();
         utils.switchOn(this);
         utils.checkState(this);
-        UvmArray<String> parsed = utils.parseArgs(arg, 3, "need _remoteAddress,_symbol,_amount");
-        String _remoteAddress = parsed.get(1);
-        String _symbol = parsed.get(2);
-        long _amount = tointeger(parsed.get(3));
-        utils.require(_remoteAddress.length() == this.getStorage().VALID_REMOTE_ADDRESS_LENGTH, "Invalid length of remote address!");
-        utils.require(_amount > 0, "Can't lock 0 amount!");
-        if (this.getStorage().nativeSymbol == _symbol) {
-
-            // Make sure there is some native asset to lock
-            String from_address = utils.get_from_address();
-            if (from_address != caller_address()) {
-                error("only common user account can lock balance");
-            }
-            long balance = get_contract_balance_amount(caller_address(), _symbol);
-            if (tointeger(balance) <= getStorage().nativeCap) {
-                error("Exceed native asset lock limit!");
-            }
-        } else {
-            String tokenContract = tostring(this.getStorage().tokenContracts.get(_symbol));
-            utils.require(is_valid_address(tokenContract), "Token contract hasn't registered!");
-//
-            utils.require(_amount == 0, "Token contract can't receive the native amount");
-            MultiOwnedContractSimpleInterface multiOwnedContractSimpleInterface = importContractFromAddress(MultiOwnedContractSimpleInterface.class, tokenContract);
-            utils.require(multiOwnedContractSimpleInterface.balanceOf(utils.get_from_address()) >= _amount, "Insufficient balance!");
-            utils.require(multiOwnedContractSimpleInterface.allowance(utils.get_from_address(), caller_address()) >= _amount, "Insufficient allowance!");
-            utils.require(multiOwnedContractSimpleInterface.balanceOf(caller_address()) + _amount <= tointeger(this.getStorage().tokenCaps.get(_symbol)), "Exceed token lock limit!");
-            multiOwnedContractSimpleInterface.safeTransferFrom(utils.get_from_address(), caller_address(), _amount);
-        }
-        this.getStorage()._eventNonce = this.getStorage()._eventNonce + 1;
+        UvmArray<String> parsed = utils.parseArgs(arg, 3, "need remoteAddress,symbol,amount");
+        String remoteAddress = parsed.get(1);
+        String symbol = parsed.get(2);
+        long amount = tointeger(parsed.get(3));
+        utils.require(remoteAddress.length() == this.getStorage().VALID_REMOTE_ADDRESS_LENGTH, "Invalid length of remote address!");
+        utils.require(amount > 0, "Can't lock 0 amount!");
+        utils.require(fast_map_get("tokenContracts", symbol) != null, "Token contract hasn't registered!");
+        String tokenContract = tostring(fast_map_get("tokenContracts", symbol));
+        utils.require(amount == 0, "Token contract can't receive the native amount");
+        MultiOwnedContractSimpleInterface multiOwnedContractSimpleInterface = importContractFromAddress(MultiOwnedContractSimpleInterface.class, tokenContract);
+        utils.require(multiOwnedContractSimpleInterface.balanceOf(utils.get_from_address()) >= amount, "Insufficient balance!");
+        utils.require(multiOwnedContractSimpleInterface.allowance(utils.get_from_address(), caller_address()) >= amount, "Insufficient allowance!");
+        Object tokenCaps = fast_map_get("tokenCaps", symbol);
+        utils.require(multiOwnedContractSimpleInterface.balanceOf(caller_address()) + amount <= tointeger(tokenCaps), "Exceed token lock limit!");
+        multiOwnedContractSimpleInterface.safeTransferFrom(utils.get_from_address(), caller_address(), amount);
+        this.getStorage().eventNonce = this.getStorage().eventNonce + 1;
         UvmMap uvmMap = UvmMap.create();
-        uvmMap.set("_eventNonce", this.getStorage()._eventNonce);
-        uvmMap.set("from", utils.get_from_address());
-        uvmMap.set("to", _remoteAddress);
-        uvmMap.set("symbol", _symbol);
-        uvmMap.set("amount", _amount);
+        uvmMap.set("nonce", this.getStorage().eventNonce);
+        uvmMap.set("localAddress", utils.get_from_address());
+        uvmMap.set("remoteAddress", remoteAddress);
+        uvmMap.set("symbol", symbol);
+        uvmMap.set("amount", amount);
         emit("AssetLocked", tojsonstring(uvmMap));
-
     }
 
     public void releaseAsset(String arg) {
         Utils utils = new Utils();
         utils.checkState(this);
-        UvmArray<String> parsed = utils.parseArgs(arg, 5, "need _eventNonce,_localAddress,_remoteAddress,_symbol and _amount");
-        String _eventNonce = parsed.get(1);
-        utils.require(!this.getStorage().handledNonces.get(_eventNonce), "Event was already handled!");
-        String _localAddress = parsed.get(2);
-        String _remoteAddress = parsed.get(3);
-        String _symbol = parsed.get(4);
-        long _amount = tointeger(parsed.get(5));
-        utils._releaseAsset(this, _localAddress, _symbol, _amount);
-        this.getStorage()._lastHandledNonce = tointeger(_eventNonce);
-        this.getStorage().handledNonces.set(_eventNonce, true);
+        UvmArray<String> parsed = utils.parseArgs(arg, 5, "need eventNonce,localAddress,remoteAddress,symbol and amount");
+        String eventNonce = parsed.get(1);
+        utils.require(!toboolean(fast_map_get("handledNonces", eventNonce)), "Event was already handled!");
+        String localAddress = parsed.get(2);
+        String remoteAddress = parsed.get(3);
+        String symbol = parsed.get(4);
+        long amount = tointeger(parsed.get(5));
+        utils._releaseAsset(this, localAddress, symbol, amount);
+        this.getStorage().lastHandledNonce = tointeger(eventNonce);
+        fast_map_set("handledNonces", eventNonce, true);
         UvmMap uvmMap = UvmMap.create();
-        uvmMap.set("_eventNonce", _eventNonce);
-        uvmMap.set("_localAddress", _localAddress);
-        uvmMap.set("_remoteAddress", _remoteAddress);
-        uvmMap.set("_symbol", _symbol);
-        uvmMap.set("_amount", _amount);
+        uvmMap.set("nonce", eventNonce);
+        uvmMap.set("localAddress", localAddress);
+        uvmMap.set("remoteAddress", remoteAddress);
+        uvmMap.set("symbol", symbol);
+        uvmMap.set("amount", amount);
         emit("AssetReleased", tojsonstring(uvmMap));
     }
 
@@ -171,19 +197,19 @@ public class SourceContract extends UvmContract<Storage> {
         utils.switchOn(this);
         utils.onlyWitness(this);
         utils.checkState(this);
-        UvmArray<String> parsed = utils.parseArgs(arg, 4, "need _eventNonce,_recviceAddress,_symbol and _amount");
-        String _eventNonce = parsed.get(1);
-        utils.require(this.getStorage().rollbackNonces.get(_eventNonce), "Event was already handled!");
-        String _recviceAddress = parsed.get(2);
-        String _symbol = parsed.get(3);
-        long _amount = tointeger(parsed.get(4));
-        utils._releaseAsset(this, _recviceAddress, _symbol, _amount);
-        this.getStorage().handledNonces.set(_eventNonce, true);
+        UvmArray<String> parsed = utils.parseArgs(arg, 4, "need eventNonce,receiveAddress,symbol and amount");
+        String eventNonce = parsed.get(1);
+        utils.require(!toboolean(fast_map_get("rollbackNonces", eventNonce)), "Event was already handled!");
+        String receiveAddress = parsed.get(2);
+        String symbol = parsed.get(3);
+        long amount = tointeger(parsed.get(4));
+        utils._releaseAsset(this, receiveAddress, symbol, amount);
+        fast_map_set("rollbackNonces", eventNonce, true);
         UvmMap uvmMap = UvmMap.create();
-        uvmMap.set("_eventNonce", _eventNonce);
-        uvmMap.set("_recviceAddress", _recviceAddress);
-        uvmMap.set("_symbol", _symbol);
-        uvmMap.set("_amount", _amount);
+        uvmMap.set("nonce", eventNonce);
+        uvmMap.set("receiveAddress", receiveAddress);
+        uvmMap.set("symbol", symbol);
+        uvmMap.set("amount", amount);
         emit("AssetLockRollback", tojsonstring(uvmMap));
     }
 

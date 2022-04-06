@@ -1,8 +1,6 @@
 package gjavac.test.apicase;
 
-import gjavac.lib.Contract;
-import gjavac.lib.UvmArray;
-import gjavac.lib.UvmContract;
+import gjavac.lib.*;
 
 import static gjavac.lib.UvmCoreLibs.*;
 
@@ -69,7 +67,6 @@ public class ApiCase extends UvmContract<Storage> {
     public long test_transfer_from_contract_to_public_account(String args) {
         Utils utils = new Utils();
         UvmArray<String> parsed = utils.parseArgs(args, 2, "need to account name,amount");
-        /* 返回值 0 转账成功 -1 未知系统异常 -2 Asset_symbol异常 -3 合约地址非法 -4 目标地址非法 -5 账户余额不足支付转账金额 -6 转账金额为负数 -7 不存在指定账户名 */
         return transfer_from_contract_to_public_account(tostring(parsed.get(1)), get_system_asset_symbol(), tointeger(parsed.get(2)));
     }
 
@@ -100,8 +97,11 @@ public class ApiCase extends UvmContract<Storage> {
         return 0;
     }
 
-    public void test_hex_to_bytes(String args) {
+    @Offline
+    public String test_hex_to_bytes(String args) {
         //TODO
+        UvmTable totable = hex_to_bytes(args);
+        return bytes_to_hex(totable);
     }
 
     public void test_bytes_to_hex() {

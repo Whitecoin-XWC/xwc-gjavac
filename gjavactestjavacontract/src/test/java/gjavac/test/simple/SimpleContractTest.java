@@ -21,6 +21,7 @@ public class SimpleContractTest extends UvmContract<SimpleStorage> {
     public void init() {
         print("This is a simple contract testing init()...");
         this.getStorage().name = "A simple testing!";
+        this.getStorage().totalReward = new UvmMap<>();
     }
 
 //    @Offline
@@ -35,28 +36,20 @@ public class SimpleContractTest extends UvmContract<SimpleStorage> {
 //        return this.getStorage().name;
 //    }
 
-    @Offline
-    public Object array(String arg) {
-////        UvmStringModule stringModule = (UvmStringModule) UvmCoreLibs.importModule(UvmStringModule.class, "string");
-////        UvmArray parsed = stringModule.split(arg, ",");
-////        UvmMap map = UvmMap.create();
-////        map.set("0", parsed.get(0));
-////        map.set("1", parsed.get(1));
-////        map.set("2", parsed.get(2));
-//        UvmArray uvmArray = UvmArray.create();
-//        uvmArray.set(100,100);
-//        return uvmArray.get(100);
-        ArrayList arrayList = new ArrayList();
-        arrayList.add(1);
-        return null;
-
+    public void set_test(){
+        this.getStorage().totalReward.set("XWC",10L);
     }
 
+    @Offline
+    public Long get_test(){
+        return this.getStorage().totalReward.get("XWC");
+    }
 
 }
 
 class SimpleStorage {
     public String name;
+    public UvmMap<Long> totalReward;
 }
 
 class simpleEntryPoint {

@@ -28,17 +28,17 @@ public class JavaContractTest {
 //        MainKt.main(classesToCompile);
 //    }
 //
-//    @Test
-//    public void testDaiContractCompile() {
-//        String class1 = testClassesDir + "/gjavac/test/dai/DaiPriceFeederForCdcContract";
-//        String class2 = testClassesDir + "/gjavac/test/dai/Utils";
-//        String class3 = testClassesDir + "/gjavac/test/dai/MultiOwnedContractSimpleInterface";
-//        String class4 = testClassesDir + "/gjavac/test/dai/DaiPriceFeederForCdcContractEntryPoint";
-//        String class5 = testClassesDir + "/gjavac/test/dai/Storage";
-//
-//        String[] classesToCompile = new String[]{class1, class2, class3, class4, class5, "-o", "outputs/dai_results"};
-//        MainKt.main(classesToCompile);
-//    }
+    @Test
+    public void testDaiContractCompile() {
+        String class1 = testClassesDir + "/gjavac/test/dai/DaiPriceFeederForCdcContract";
+        String class2 = testClassesDir + "/gjavac/test/dai/Utils";
+        String class3 = testClassesDir + "/gjavac/test/dai/MultiOwnedContractSimpleInterface";
+        String class4 = testClassesDir + "/gjavac/test/dai/DaiPriceFeederForCdcContractEntryPoint";
+        String class5 = testClassesDir + "/gjavac/test/dai/Storage";
+
+        String[] classesToCompile = new String[]{class1, class2, class3, class4, class5, "-o", "outputs/dai_results"};
+        MainKt.main(classesToCompile);
+    }
 //
     @Test
     public void testSimpleContractCompile() {
