@@ -38,40 +38,42 @@ public class SourceContract extends UvmContract<Storage> {
     public void setEventNonce(String eventNonce) {
         Utils utils = new Utils();
         utils.checkAdmin(this);
+        long oldEventNonce = this.getStorage().eventNonce;
         this.getStorage().eventNonce = tointeger(eventNonce);
+        UvmMap uvmMap = UvmMap.create();
+        uvmMap.set("oldNonce", oldEventNonce);
+        uvmMap.set("newNonce", tointeger(eventNonce));
+        emit("EventNonceChanged", tojsonstring(uvmMap));
     }
 
     public void setLastHandledNonce(String eventNonce) {
         Utils utils = new Utils();
         utils.checkAdmin(this);
+        long oldLastHandledNonce = this.getStorage().lastHandledNonce;
         this.getStorage().lastHandledNonce = tointeger(eventNonce);
+        UvmMap uvmMap = UvmMap.create();
+        uvmMap.set("oldNonce", oldLastHandledNonce);
+        uvmMap.set("newNonce", tointeger(eventNonce));
+        emit("LastHandledNonceChanged", tojsonstring(uvmMap));
     }
 
     @Offline
     public long getEventNonce() {
-        Utils utils = new Utils();
-        utils.checkAdmin(this);
         return this.getStorage().eventNonce;
     }
 
     @Offline
     public long getLastHandledNonce() {
-        Utils utils = new Utils();
-        utils.checkAdmin(this);
         return this.getStorage().lastHandledNonce;
     }
 
     @Offline
     public String getNativeSymbol() {
-        Utils utils = new Utils();
-        utils.checkAdmin(this);
         return this.getStorage().nativeSymbol;
     }
 
     @Offline
     public long getNativeCap() {
-        Utils utils = new Utils();
-        utils.checkAdmin(this);
         return this.getStorage().nativeCap;
     }
 
@@ -83,16 +85,6 @@ public class SourceContract extends UvmContract<Storage> {
     @Offline
     public Object getTokenCap(String symbol) {
         return tostring(fast_map_get("tokenCaps", symbol));
-    }
-
-    @Offline
-    public String getContractCurrent() {
-        return get_current_contract_address();
-    }
-
-    @Offline
-    public Object getContractBalances() {
-        return get_contract_balance_amount(get_current_contract_address(), "XWC");
     }
 
 
