@@ -95,7 +95,7 @@ public class Utils {
             require(tointeger(get_contract_balance_amount(caller_address(), _symbol)) >= _amount, "Insufficient native asset to release!");
 
             //transfer native asset
-            withdrawNativeAssetPrivate(self, _recviceAddress, self.getStorage().nativeSymbol, tostring(_amount));
+            withdrawNativeAssetPrivate(self, _recviceAddress, _symbol, tostring(_amount));
         } else {
             //get token contract address by symbol
             String tokenContract = tostring(self.getStorage().tokenContracts.get(_symbol));

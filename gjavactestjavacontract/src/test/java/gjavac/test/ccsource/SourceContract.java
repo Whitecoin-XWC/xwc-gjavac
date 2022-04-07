@@ -120,11 +120,11 @@ public class SourceContract extends UvmContract<Storage> {
         uvmMap.set("contractAddress", contract);
         uvmMap.set("cap", cap);
         emit("TokenRegistered", tojsonstring(uvmMap));
-        UvmMap uvmMap1 = UvmMap.create();
-        uvmMap1.set("symbol", symbol);
-        uvmMap1.set("oldCap", 0);
-        uvmMap1.set("newCap", cap);
-        emit("TokenCapChanged", tojsonstring(uvmMap1));
+        UvmMap capChangeMap = UvmMap.create();
+        capChangeMap.set("symbol", symbol);
+        capChangeMap.set("oldCap", 0);
+        capChangeMap.set("newCap", cap);
+        emit("TokenCapChanged", tojsonstring(capChangeMap));
     }
 
 
@@ -172,6 +172,8 @@ public class SourceContract extends UvmContract<Storage> {
 
     public void releaseAsset(String arg) {
         Utils utils = new Utils();
+        utils.switchOn(this);
+        utils.onlyWitness(this);
         utils.checkState(this);
         UvmArray<String> parsed = utils.parseArgs(arg, 5, "need eventNonce,localAddress,remoteAddress,symbol and amount");
         String eventNonce = parsed.get(1);
