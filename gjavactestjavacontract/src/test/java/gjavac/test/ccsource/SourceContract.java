@@ -29,11 +29,36 @@ public class SourceContract extends UvmContract<Storage> {
         storage.handledNonces = new UvmMap<>();
     }
 
-    @Offline
     public void setNativeSymbol(String newSymbol) {
         Utils utils = new Utils();
         utils.checkAdmin(this);
         this.getStorage().nativeSymbol = newSymbol;
+    }
+
+    public void setEventNonce(String eventNonce) {
+        Utils utils = new Utils();
+        utils.checkAdmin(this);
+        this.getStorage().eventNonce = tointeger(eventNonce);
+    }
+
+    public void setLastHandledNonce(String eventNonce) {
+        Utils utils = new Utils();
+        utils.checkAdmin(this);
+        this.getStorage().lastHandledNonce = tointeger(eventNonce);
+    }
+
+    @Offline
+    public long getEventNonce() {
+        Utils utils = new Utils();
+        utils.checkAdmin(this);
+        return this.getStorage().eventNonce;
+    }
+
+    @Offline
+    public long getLastHandledNonce() {
+        Utils utils = new Utils();
+        utils.checkAdmin(this);
+        return this.getStorage().lastHandledNonce;
     }
 
     @Offline
