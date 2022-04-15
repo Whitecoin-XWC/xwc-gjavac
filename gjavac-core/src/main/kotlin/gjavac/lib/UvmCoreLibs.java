@@ -1,7 +1,9 @@
 package gjavac.lib;
 
 import com.google.gson.Gson;
-
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class UvmCoreLibs {
@@ -25,6 +27,31 @@ public class UvmCoreLibs {
             Gson gson = new Gson();
             return gson.toJson(obj);
         }
+    }
+
+    public static String sha_hex(String s, String sha_encoding_method) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(sha_encoding_method);
+
+            byte[] sha_result = md.digest(s.getBytes());
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < sha_result.length; i++) {
+                sb.append(Integer.toString((sha_result[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            return sb.toString();
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String sha1_hex(String s) {
+        return sha_hex(s, "SHA-1");
+    }
+
+    public static String sha256_hex(String s) {
+        return sha_hex(s, "SHA-256");
     }
 
     public static void pprint(Object obj) {
