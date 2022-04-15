@@ -2,6 +2,7 @@ package gjavac.lib;
 
 import com.google.gson.Gson;
 
+import java.math.BigInteger;
 import java.util.*;
 
 public class UvmCoreLibs {
@@ -16,6 +17,32 @@ public class UvmCoreLibs {
         } else {
             return obj.toString();
         }
+    }
+
+    public static byte[] hex_to_bytes(String hexString) {
+        int val = Integer.parseInt(hexString, 16);
+
+        // converting integer value to Byte Array
+        BigInteger big = BigInteger.valueOf(val);
+
+        byte[] res = big.toByteArray();
+        return res;
+    }
+
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
+    public static String bytes_to_hex(byte[] table) {
+        char[] hexChars = new char[table.length * 2];
+        
+        for (int j = 0; j < table.length; j++) {
+            int v = table[j] & 0xFF;
+
+            // Convert one hex nibble at a time
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+
+        return new String(hexChars);
     }
 
     public static String tojsonstring(Object obj) {
