@@ -11,6 +11,33 @@ public class UvmArray<T> extends UvmTable {
         items.add(value);
     }
 
+    public void add(int index, Object value) {
+        if (index >= 1) {
+            if (items.isEmpty()) {
+                throw new java.lang.IndexOutOfBoundsException();
+            }
+            if (index <= items.size()) {
+                items.add(index - 1, value);
+
+                // Mimic Lua array behavior where adding a null
+                // item at the end of a list removes the value
+
+                if (value == null && index == items.size()) {
+                    items.remove(items.size() - 1);
+                }
+            } else {
+                throw new java.lang.IndexOutOfBoundsException();
+            }
+        }
+        else {
+            if (value != null) {
+                hashitems.put(index, value);
+            } else {
+                hashitems.remove(index);
+            }
+        }
+    }
+
     public void pop() {
         if (items.size() > 0) {
             items.remove(items.size() - 1);
