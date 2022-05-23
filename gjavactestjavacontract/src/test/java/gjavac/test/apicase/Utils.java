@@ -1,5 +1,6 @@
 package gjavac.test.apicase;
 
+import gjavac.lib.Component;
 import gjavac.lib.UvmArray;
 import gjavac.lib.UvmStringModule;
 
@@ -10,6 +11,7 @@ import static gjavac.lib.UvmCoreLibs.importModule;
  * Description: gjavac
  * Created by moloq on 2022/1/24 14:20
  */
+@Component
 public class Utils {
 
     public final UvmArray<String> parseArgs(String arg, int count, String errorMsg) {

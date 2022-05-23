@@ -30,11 +30,11 @@ public class UvmCoreLibs {
         }
     }
 
-    public static byte[] hex_to_bytes(String hexString) {
-        return empty_table;
+    public static UvmTable hex_to_bytes(String hexString) {
+        return new UvmTable();
     }
 
-    public static String bytes_to_hex(byte[] table){
+    public static String bytes_to_hex(UvmTable table){
         return "";
     }
 
