@@ -1,8 +1,6 @@
 package gjavac.test.apicase;
 
-import gjavac.lib.Contract;
-import gjavac.lib.UvmArray;
-import gjavac.lib.UvmContract;
+import gjavac.lib.*;
 
 import static gjavac.lib.UvmCoreLibs.*;
 
@@ -61,15 +59,14 @@ public class ApiCase extends UvmContract<Storage> {
         return get_transaction_fee();
     }
 
+    @Offline
     public String test_get_transaction_id() {
-        //TODO
-        return "";
+        return get_transaction_id();
     }
 
     public long test_transfer_from_contract_to_public_account(String args) {
         Utils utils = new Utils();
         UvmArray<String> parsed = utils.parseArgs(args, 2, "need to account name,amount");
-        /* 返回值 0 转账成功 -1 未知系统异常 -2 Asset_symbol异常 -3 合约地址非法 -4 目标地址非法 -5 账户余额不足支付转账金额 -6 转账金额为负数 -7 不存在指定账户名 */
         return transfer_from_contract_to_public_account(tostring(parsed.get(1)), get_system_asset_symbol(), tointeger(parsed.get(2)));
     }
 
@@ -95,44 +92,55 @@ public class ApiCase extends UvmContract<Storage> {
         return get_contract_call_frame_stack_size();
     }
 
+    @Offline
     public int test_wait_for_future_random(int blockHeight) {
-        //TODO
-        return 0;
+        return wait_for_future_random(blockHeight);
     }
 
-    public void test_hex_to_bytes(String args) {
-        //TODO
+    @Offline
+    public UvmTable test_hex_to_bytes(String args) {
+        return hex_to_bytes(args);
     }
 
-    public void test_bytes_to_hex() {
-        //TODO
+    @Offline
+    public String test_bytes_to_hex(String args) {
+        return bytes_to_hex(hex_to_bytes(args));
     }
 
-    public void test_sha1_hex() {
-        //TODO
+    @Offline
+    public String test_sha1_hex(String arg) {
+        return sha1_hex(arg);
     }
 
-    public void test_sha3_hex() {
-        //TODO
+    @Offline
+    public String test_sha3_hex(String arg) {
+        return sha3_hex(arg);
     }
 
-    public void test_sha256_hex() {
-        //TODO
+    @Offline
+    public String test_sha256_hex(String arg) {
+        return sha256_hex(arg);
     }
 
-    public void test_ripemd160_hex() {
-        //TODO
+    @Offline
+    public String test_ripemd160_hex(String arg) {
+        return ripemd160_hex(arg);
     }
 
-    public void cbor_encode() {
-        //TODO
+    @Offline
+    public String test_cbor_encode(String arg) {
+        return cbor_encode(arg);
     }
 
-    public void test_cbor_decode() {
-        //TODO
+    @Offline
+    public Object test_cbor_decode(String arg) {
+        return cbor_decode(arg);
     }
 
-    public void test_signature_recover() {
-        //TODO
+    @Offline
+    public String test_signature_recover(String args) {
+        Utils utils = new Utils();
+        UvmArray<String> parse = utils.parseArgs(args, 2, "need 2 params");
+        return signature_recover(parse.get(1), parse.get(2));
     }
 }

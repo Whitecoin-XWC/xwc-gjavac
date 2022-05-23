@@ -3,8 +3,11 @@ package gjavac.lib;
 import com.google.gson.Gson;
 
 import java.util.*;
+import java.lang.Object;
 
 public class UvmCoreLibs {
+    static private byte[] empty_table = {0};
+    static private Integer zero = 0;
 
     public static void print(Object obj) {
         System.out.println(tostring(obj));
@@ -25,6 +28,50 @@ public class UvmCoreLibs {
             Gson gson = new Gson();
             return gson.toJson(obj);
         }
+    }
+
+    public static UvmTable hex_to_bytes(String hexString) {
+        return new UvmTable();
+    }
+
+    public static String bytes_to_hex(UvmTable table){
+        return "";
+    }
+
+    public static String get_transaction_id(){
+        return "";
+    }
+
+    public static int wait_for_future_random (int arg) {
+        return 0;
+    }
+
+    public static String sha1_hex(String s) {
+        return "";
+    }
+
+    public static String sha3_hex(String s) {
+        return "";
+    }
+
+    public static String sha256_hex(String s) {
+        return "";
+    }
+
+    public static String ripemd160_hex(String s) {
+        return "";
+    }
+
+    public static String cbor_encode (Object o)  {
+        return "";
+    }
+
+    public static Object cbor_decode (String s)  {
+        return zero;
+    }
+
+    public static String signature_recover (String a, String b) {
+        return "";
     }
 
     public static void pprint(Object obj) {
